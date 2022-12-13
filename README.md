@@ -26,10 +26,12 @@
 <img alt="NSIDC logo" src="https://nsidc.org/themes/custom/nsidc/logo.svg" width="150" />
 
 
-# {title}
+# NSIDC Passive Microwave Data python libarary
 
-{title} enables {audience} to {utility}.
-
+The `pm_data` python library enables users to access passive microwave data from
+NSIDC in a consistent manner. This libarary exposes standard data models for
+passive microwave data that are expected by other libraries that consume passive
+microwave data at NSIDC.
 
 ## Level of Support
 
