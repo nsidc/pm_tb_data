@@ -6,6 +6,7 @@ different products (e.g., SIC, snow extent, etc.).
 ## Near real time LANCE data for AMSR2
 
 [Link to data (requires earthdata login)](https://lance.nsstc.nasa.gov/amsr2-science/data/level3/seaice12/R04/hdfeos5/)
+[Link to dataset landing page](https://cmr.earthdata.nasa.gov/search/concepts/C1886605827-LANCEAMSR2.html#)
 
 * `*_P04_*` files are "NRT". Usually only one P file at a time. If data never completes for a day, P file remains.
 * `*_R04_*` files are "final".
