@@ -1,19 +1,15 @@
-"""Assess access options for NRT AMSR2 LANCE data.
-"""
+"""Assess access options for NRT AMSR2 LANCE data."""
+import os
+
 import earthaccess
 import requests
-import os
 
 
 def _get_earthdata_creds():
     if not os.environ.get("EARTHDATA_USERNAME"):
-        raise RuntimeError(
-            "Environment variable EARTHDATA_USERNAME must be defined."
-        )
+        raise RuntimeError("Environment variable EARTHDATA_USERNAME must be defined.")
     if not os.environ.get("EARTHDATA_PASSWORD"):
-        raise RuntimeError(
-            "Environment variable EARTHDATA_PASSWORD must be defined."
-        )
+        raise RuntimeError("Environment variable EARTHDATA_PASSWORD must be defined.")
 
     return (
         os.environ["EARTHDATA_USERNAME"],
@@ -69,13 +65,9 @@ def create_earthdata_authenticated_session(s=None, *, hosts, verify):
 
 def _get_earthdata_creds():
     if not os.environ.get("EARTHDATA_USERNAME"):
-        raise RuntimeError(
-            "Environment variable EARTHDATA_USERNAME must be defined."
-        )
+        raise RuntimeError("Environment variable EARTHDATA_USERNAME must be defined.")
     if not os.environ.get("EARTHDATA_PASSWORD"):
-        raise RuntimeError(
-            "Environment variable EARTHDATA_PASSWORD must be defined."
-        )
+        raise RuntimeError("Environment variable EARTHDATA_PASSWORD must be defined.")
 
     return (
         os.environ["EARTHDATA_USERNAME"],
@@ -86,16 +78,16 @@ def _get_earthdata_creds():
 CHUNK_SIZE = 8 * 1024
 
 
-if __name__ == '__main__':
-    results = earthaccess.search_data(short_name='AU_SI12_NRT_R04')
-    results = sorted(results, key=lambda x: x['meta']['revision-date'], reverse=True)
+if __name__ == "__main__":
+    results = earthaccess.search_data(short_name="AU_SI12_NRT_R04")
+    results = sorted(results, key=lambda x: x["meta"]["revision-date"], reverse=True)
     auth = earthaccess.login()
     # files = earthaccess.download(results, "/tmp/test")
 
     for granule in results:
         # There are two links for each granule. one for lance.nsstc.nasa.gov and
         # the other for lance.itsc.uah.edu. The first one is fine.
-        url = granule.data_links(access='external')[0]
+        url = granule.data_links(access="external")[0]
         session = create_earthdata_authenticated_session(hosts=[url], verify=True)
         with session.get(
             url,
@@ -105,9 +97,9 @@ if __name__ == '__main__':
         ) as resp:
             # e.g., https://lance.nsstc.nasa.gov/.../AMSR_U2_L3_SeaIce12km_P04_20230926.he5
             # -> AMSR_U2_L3_SeaIce12km_P04_20230926.he5
-            fn = url.split('/')[-1]
-            with open(f'/tmp/test/{fn}', "wb") as f:
+            fn = url.split("/")[-1]
+            with open(f"/tmp/test/{fn}", "wb") as f:
                 for chunk in resp.iter_content(chunk_size=CHUNK_SIZE):
                     f.write(chunk)
 
-            print(f'wrote {fn}')
+            print(f"wrote {fn}")

@@ -1,0 +1,40 @@
+[tool.black]
+target-version = ["py310"]
+
+[tool.ruff]
+target-version = "py310"
+select = [
+  "F",
+  "E",
+  "W",
+  "C4",
+  "C90",
+  "I",
+  "N",
+  "D",
+  "UP",
+  "YTT",
+  "B",
+  "A",
+  "C4",
+  "T10",
+  "RUF",
+]
+
+ignore = [
+  # D1: Ignore errors requiring docstrings on everything.
+  # D203: "1 blank line required before class docstring"
+  # D213: "Multi-line docstring summary should start at the second line"
+  # E731: Lambda assignments are OK, use your best judgement.
+  # RUF010: !a, !r, !s are too magical for me.
+  "D1", "D203", "D213", "E731", "RUF010",
+]
+
+[tool.ruff.isort]
+known-first-party = ["pm_tb_data"]
+
+[tool.ruff.mccabe]
+max-complexity = 8
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "double"

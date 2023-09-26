@@ -4,4 +4,22 @@ channels:
   - nodefaults
 dependencies:
   - python ~=3.10.0
+
+  ########################################
+  # Imported dependencies and extensions #
+  ########################################
   - earthaccess
+
+  #############################
+  # Non-imported dependencies #
+  #############################
+
+  # linting
+  - pre-commit
+
+  # typechecking
+  - mypy ~=1.5.0
+
+  # other utilities
+  - ipython
+  - ipdb
