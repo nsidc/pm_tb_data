@@ -20,7 +20,7 @@ def _get_earthdata_creds():
 URS_COOKIE = "urs_user_already_logged"
 
 
-def create_earthdata_authenticated_session(s=None, *, hosts, verify):
+def create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify):
     if not s:
         s = requests.session()
 
@@ -61,18 +61,6 @@ def create_earthdata_authenticated_session(s=None, *, hosts, verify):
         print(f"Authenticated for {host} with Earthdata Login.")
 
     return s
-
-
-def _get_earthdata_creds():
-    if not os.environ.get("EARTHDATA_USERNAME"):
-        raise RuntimeError("Environment variable EARTHDATA_USERNAME must be defined.")
-    if not os.environ.get("EARTHDATA_PASSWORD"):
-        raise RuntimeError("Environment variable EARTHDATA_PASSWORD must be defined.")
-
-    return (
-        os.environ["EARTHDATA_USERNAME"],
-        os.environ["EARTHDATA_PASSWORD"],
-    )
 
 
 CHUNK_SIZE = 8 * 1024
