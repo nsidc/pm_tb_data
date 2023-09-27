@@ -13,17 +13,17 @@
 version: 1
 metadata:
   content_hash:
-    linux-64: f289a079a78b6b7f65f1b1cb962df0a67157aa3c14a02e30fdf1b0f8d6f21f6b
-    osx-arm64: f4d7f93da9266ba319cef81ec9d26cb8cf66b4e7e112798ad6956f58ad2a66cc
-    osx-64: 528a90397d8aec71078abcf29eaecc3037c1102a47fb9367732e328286eaa5d2
-    win-64: 2cd424324b210e2b8457084f088d91eb665ba15c0574d6af9d0cd1c5b79f913a
+    linux-64: 1c349b46062f050c751eca83915bbc84b197c1f095048ede2fecf37d94235ce4
+    osx-arm64: 1065adb760369b8bda0ee0fa44443fc494a7655685230a389ca8ce55d18c778d
+    osx-64: f53b1e79a71729987d70ecc8f80d677d17eb29ba2e95f5dc47d1db1c81b9741e
+    win-64: c9e7d25d0f7a09af05fd0c1f3bf711151819fd5fe77972facb5b1229bfbb4d01
   channels:
   - url: conda-forge
     used_env_vars: []
   platforms:
   - linux-64
-  - osx-arm64
   - osx-64
+  - osx-arm64
   - win-64
   sources:
   - environment.yml
@@ -696,6 +696,18 @@ package:
     sha256: ac46cc2f6d4bbeedcd2f508e43f43143a9286ced55730d8d97a3c91ceceb0d56
   category: main
   optional: false
+- name: mdurl
+  version: 0.1.0
+  manager: conda
+  platform: linux-64
+  dependencies:
+    python: '>=3.6'
+  url: https://conda.anaconda.org/conda-forge/noarch/mdurl-0.1.0-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: f8dab71fdc13b1bf29a01248b156d268
+    sha256: c678b9194e025b1fb665bec30ee20aab93399203583875b1dcc0a3b52a8f5523
+  category: main
+  optional: false
 - name: more-itertools
   version: 10.1.0
   manager: conda
@@ -1244,6 +1256,19 @@ package:
     sha256: b045faba7130ab263db6a8fdc96b1a3de5fcf85c4a607c5f11a49e76851500b5
   category: main
   optional: false
+- name: markdown-it-py
+  version: 3.0.0
+  manager: conda
+  platform: linux-64
+  dependencies:
+    mdurl: '>=0.1,<1'
+    python: '>=3.8'
+  url: https://conda.anaconda.org/conda-forge/noarch/markdown-it-py-3.0.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 93a8e71256479c62074356ef6ebf501b
+    sha256: c041b0eaf7a6af3344d5dd452815cdc148d6284fec25a4fa3f4263b3a021e962
+  category: main
+  optional: false
 - name: matplotlib-inline
   version: 0.1.6
   manager: conda
@@ -1367,19 +1392,6 @@ package:
     sha256: 943c644a13a517d5ca9761e2c3f8697db85ea0c05a44e13697d826f7f5e1d351
   category: main
   optional: false
-- name: annotated-types
-  version: 0.5.0
-  manager: conda
-  platform: linux-64
-  dependencies:
-    python: '>=3.7'
-    typing-extensions: '>=4.0.0'
-  url: https://conda.anaconda.org/conda-forge/noarch/annotated-types-0.5.0-pyhd8ed1ab_0.conda
-  hash:
-    md5: 578ae086f225bc2380c79f3b551ff2f7
-    sha256: bbabfd4400b03ba6c50d0a55e777e0c3ba900af8dabedb9b8aded774484b5d53
-  category: main
-  optional: false
 - name: async-timeout
   version: 4.0.3
   manager: conda
@@ -1478,19 +1490,19 @@ package:
     sha256: c39a328350cba6e1d3b756e116ffd46e46eed8fc0f6f2e9ed6860d418e6d8186
   category: main
   optional: false
-- name: pydantic-core
-  version: 2.10.1
+- name: pydantic
+  version: 1.10.12
   manager: conda
   platform: linux-64
   dependencies:
     libgcc-ng: '>=12'
     python: '>=3.10,<3.11.0a0'
     python_abi: 3.10.*
-    typing-extensions: '>=4.6.0'
-  url: https://conda.anaconda.org/conda-forge/linux-64/pydantic-core-2.10.1-py310hcb5633a_0.conda
+    typing-extensions: '>=4.2.0'
+  url: https://conda.anaconda.org/conda-forge/linux-64/pydantic-1.10.12-py310h2372a71_1.conda
   hash:
-    md5: 166a33403c767f760c07ceae7fe2d0f9
-    sha256: 3c02b3589dab5ad9cf593d1cf9d380ca21ad552fd8a1d424591b52119da31714
+    md5: 92818992253ff7f7ea4924785b1eadb9
+    sha256: 6ab9ab48fec65d3ddbb7ed2249cd5fc01ba129aee1cdc65003ec79ee6a1e6778
   category: main
   optional: false
 - name: requests
@@ -1507,6 +1519,21 @@ package:
   hash:
     md5: a30144e4156cdbb236f99ebb49828f8b
     sha256: 9f629d6fd3c8ac5f2a198639fe7af87c4db2ac9235279164bfe0fcb49d8c4bad
+  category: main
+  optional: false
+- name: rich
+  version: 13.5.3
+  manager: conda
+  platform: linux-64
+  dependencies:
+    markdown-it-py: '>=2.2.0'
+    pygments: '>=2.13.0,<3.0.0'
+    python: '>=3.7.0'
+    typing_extensions: '>=4.0.0,<5.0.0'
+  url: https://conda.anaconda.org/conda-forge/noarch/rich-13.5.3-pyhd8ed1ab_0.conda
+  hash:
+    md5: a83bf2810a4e756b220f61cb8f90a736
+    sha256: 0207793d5d5fbb239ffeb5c649feaf3901d65245436a0fcbd95b48f966422ccb
   category: main
   optional: false
 - name: stack_data
@@ -1630,21 +1657,6 @@ package:
     sha256: 10e7fdc75d4b85633be6b12a70b857053987127a808caa0f88b2cba4b3ce6359
   category: main
   optional: false
-- name: pydantic
-  version: 2.4.1
-  manager: conda
-  platform: linux-64
-  dependencies:
-    annotated-types: '>=0.4.0'
-    pydantic-core: 2.10.1
-    python: '>=3.7'
-    typing-extensions: '>=4.6.1'
-  url: https://conda.anaconda.org/conda-forge/noarch/pydantic-2.4.1-pyhd8ed1ab_0.conda
-  hash:
-    md5: 57e71962bd9ec1b2958888de25049e11
-    sha256: eda989f66ebd5390a053d3d5dbf9a6b9eae386d84ab7bc79df0818d93527f5e2
-  category: main
-  optional: false
 - name: python-cmr
   version: 0.9.0
   manager: conda
@@ -1656,6 +1668,20 @@ package:
   hash:
     md5: 85546334d5ed8d38e085e9d9f9152748
     sha256: cb94626a74501b559ae8cf5ac6ad563cb6afa505cc334cdc3ffcdddebe2ceebe
+  category: main
+  optional: false
+- name: rich-click
+  version: 1.6.1
+  manager: conda
+  platform: linux-64
+  dependencies:
+    click: '>=7,<9'
+    python: '>=3.7'
+    rich: '>=10'
+  url: https://conda.anaconda.org/conda-forge/noarch/rich-click-1.6.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: 59a168d82c582248859d8dc8075da6f6
+    sha256: ed8ade65e48279dc9caff53230391d8f72bea6d55f6951fbf7fcc39d762e1e5e
   category: main
   optional: false
 - name: secretstorage
@@ -1703,6 +1729,23 @@ package:
   hash:
     md5: 8baace08a73a2481104903cfc9875ecd
     sha256: d929df4d8f6353dcdeca87589be214dd507ec3da81f11a38e58b6ffb53328db1
+  category: main
+  optional: false
+- name: bump-my-version
+  version: 0.10.0
+  manager: conda
+  platform: linux-64
+  dependencies:
+    click: ''
+    pydantic: <2.0.0
+    python: '>=3.8'
+    rich: ''
+    rich-click: ''
+    tomlkit: ''
+  url: https://conda.anaconda.org/conda-forge/noarch/bump-my-version-0.10.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: d0cfdd7365c03381f3d8c4402a88c50c
+    sha256: 433cc87b7e1700aaf1ed9fe6f402bfda945409379cafb0d78ed757ca74e364e5
   category: main
   optional: false
 - name: cachecontrol-with-filecache
@@ -2346,6 +2389,18 @@ package:
     sha256: 62076b034a92959d25a1321a4340745ff87b5d191b3fcfef607b746daeb845c5
   category: main
   optional: false
+- name: mdurl
+  version: 0.1.0
+  manager: conda
+  platform: osx-64
+  dependencies:
+    python: '>=3.6'
+  url: https://conda.anaconda.org/conda-forge/noarch/mdurl-0.1.0-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: f8dab71fdc13b1bf29a01248b156d268
+    sha256: c678b9194e025b1fb665bec30ee20aab93399203583875b1dcc0a3b52a8f5523
+  category: main
+  optional: false
 - name: more-itertools
   version: 10.1.0
   manager: conda
@@ -2888,6 +2943,19 @@ package:
     sha256: b045faba7130ab263db6a8fdc96b1a3de5fcf85c4a607c5f11a49e76851500b5
   category: main
   optional: false
+- name: markdown-it-py
+  version: 3.0.0
+  manager: conda
+  platform: osx-64
+  dependencies:
+    python: '>=3.8'
+    mdurl: '>=0.1,<1'
+  url: https://conda.anaconda.org/conda-forge/noarch/markdown-it-py-3.0.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 93a8e71256479c62074356ef6ebf501b
+    sha256: c041b0eaf7a6af3344d5dd452815cdc148d6284fec25a4fa3f4263b3a021e962
+  category: main
+  optional: false
 - name: matplotlib-inline
   version: 0.1.6
   manager: conda
@@ -3009,19 +3077,6 @@ package:
     sha256: 8f3268e7c118df20ca5bea75c3b5df14d648b7dc67d8d654e887aa10a9e6c150
   category: main
   optional: false
-- name: annotated-types
-  version: 0.5.0
-  manager: conda
-  platform: osx-64
-  dependencies:
-    python: '>=3.7'
-    typing-extensions: '>=4.0.0'
-  url: https://conda.anaconda.org/conda-forge/noarch/annotated-types-0.5.0-pyhd8ed1ab_0.conda
-  hash:
-    md5: 578ae086f225bc2380c79f3b551ff2f7
-    sha256: bbabfd4400b03ba6c50d0a55e777e0c3ba900af8dabedb9b8aded774484b5d53
-  category: main
-  optional: false
 - name: async-timeout
   version: 4.0.3
   manager: conda
@@ -3104,18 +3159,18 @@ package:
     sha256: c39a328350cba6e1d3b756e116ffd46e46eed8fc0f6f2e9ed6860d418e6d8186
   category: main
   optional: false
-- name: pydantic-core
-  version: 2.10.1
+- name: pydantic
+  version: 1.10.12
   manager: conda
   platform: osx-64
   dependencies:
     python: '>=3.10,<3.11.0a0'
     python_abi: 3.10.*
-    typing-extensions: '>=4.6.0'
-  url: https://conda.anaconda.org/conda-forge/osx-64/pydantic-core-2.10.1-py310h3461e44_0.conda
+    typing-extensions: '>=4.2.0'
+  url: https://conda.anaconda.org/conda-forge/osx-64/pydantic-1.10.12-py310h6729b98_1.conda
   hash:
-    md5: 91d6205b76ad99955564efe951f58cd4
-    sha256: 92db4b7a8bad216fd54da878316d16755a1d52946b8833b86327217404c1cf20
+    md5: d9c870c0af0e661f70e82b0ac6640e36
+    sha256: 5cbb8bf31d191190c961c15373e97d995481f7e854860181f4ed7dced1918acc
   category: main
   optional: false
 - name: requests
@@ -3132,6 +3187,21 @@ package:
   hash:
     md5: a30144e4156cdbb236f99ebb49828f8b
     sha256: 9f629d6fd3c8ac5f2a198639fe7af87c4db2ac9235279164bfe0fcb49d8c4bad
+  category: main
+  optional: false
+- name: rich
+  version: 13.5.3
+  manager: conda
+  platform: osx-64
+  dependencies:
+    python: '>=3.7.0'
+    typing_extensions: '>=4.0.0,<5.0.0'
+    pygments: '>=2.13.0,<3.0.0'
+    markdown-it-py: '>=2.2.0'
+  url: https://conda.anaconda.org/conda-forge/noarch/rich-13.5.3-pyhd8ed1ab_0.conda
+  hash:
+    md5: a83bf2810a4e756b220f61cb8f90a736
+    sha256: 0207793d5d5fbb239ffeb5c649feaf3901d65245436a0fcbd95b48f966422ccb
   category: main
   optional: false
 - name: stack_data
@@ -3268,21 +3338,6 @@ package:
     sha256: 10e7fdc75d4b85633be6b12a70b857053987127a808caa0f88b2cba4b3ce6359
   category: main
   optional: false
-- name: pydantic
-  version: 2.4.1
-  manager: conda
-  platform: osx-64
-  dependencies:
-    python: '>=3.7'
-    annotated-types: '>=0.4.0'
-    typing-extensions: '>=4.6.1'
-    pydantic-core: 2.10.1
-  url: https://conda.anaconda.org/conda-forge/noarch/pydantic-2.4.1-pyhd8ed1ab_0.conda
-  hash:
-    md5: 57e71962bd9ec1b2958888de25049e11
-    sha256: eda989f66ebd5390a053d3d5dbf9a6b9eae386d84ab7bc79df0818d93527f5e2
-  category: main
-  optional: false
 - name: python-cmr
   version: 0.9.0
   manager: conda
@@ -3294,6 +3349,20 @@ package:
   hash:
     md5: 85546334d5ed8d38e085e9d9f9152748
     sha256: cb94626a74501b559ae8cf5ac6ad563cb6afa505cc334cdc3ffcdddebe2ceebe
+  category: main
+  optional: false
+- name: rich-click
+  version: 1.6.1
+  manager: conda
+  platform: osx-64
+  dependencies:
+    python: '>=3.7'
+    click: '>=7,<9'
+    rich: '>=10'
+  url: https://conda.anaconda.org/conda-forge/noarch/rich-click-1.6.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: 59a168d82c582248859d8dc8075da6f6
+    sha256: ed8ade65e48279dc9caff53230391d8f72bea6d55f6951fbf7fcc39d762e1e5e
   category: main
   optional: false
 - name: virtualenv
@@ -3325,6 +3394,23 @@ package:
   hash:
     md5: 8baace08a73a2481104903cfc9875ecd
     sha256: d929df4d8f6353dcdeca87589be214dd507ec3da81f11a38e58b6ffb53328db1
+  category: main
+  optional: false
+- name: bump-my-version
+  version: 0.10.0
+  manager: conda
+  platform: osx-64
+  dependencies:
+    click: ''
+    rich: ''
+    tomlkit: ''
+    rich-click: ''
+    python: '>=3.8'
+    pydantic: <2.0.0
+  url: https://conda.anaconda.org/conda-forge/noarch/bump-my-version-0.10.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: d0cfdd7365c03381f3d8c4402a88c50c
+    sha256: 433cc87b7e1700aaf1ed9fe6f402bfda945409379cafb0d78ed757ca74e364e5
   category: main
   optional: false
 - name: cachecontrol-with-filecache
@@ -3952,6 +4038,18 @@ package:
     sha256: 4ea6a82aae3c846e8d2d4bf194124d552fb648b8ba07388be71bc52441fc69f1
   category: main
   optional: false
+- name: mdurl
+  version: 0.1.0
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    python: '>=3.6'
+  url: https://conda.anaconda.org/conda-forge/noarch/mdurl-0.1.0-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: f8dab71fdc13b1bf29a01248b156d268
+    sha256: c678b9194e025b1fb665bec30ee20aab93399203583875b1dcc0a3b52a8f5523
+  category: main
+  optional: false
 - name: more-itertools
   version: 10.1.0
   manager: conda
@@ -4494,6 +4592,19 @@ package:
     sha256: b045faba7130ab263db6a8fdc96b1a3de5fcf85c4a607c5f11a49e76851500b5
   category: main
   optional: false
+- name: markdown-it-py
+  version: 3.0.0
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    python: '>=3.8'
+    mdurl: '>=0.1,<1'
+  url: https://conda.anaconda.org/conda-forge/noarch/markdown-it-py-3.0.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 93a8e71256479c62074356ef6ebf501b
+    sha256: c041b0eaf7a6af3344d5dd452815cdc148d6284fec25a4fa3f4263b3a021e962
+  category: main
+  optional: false
 - name: matplotlib-inline
   version: 0.1.6
   manager: conda
@@ -4615,19 +4726,6 @@ package:
     sha256: 9a5f71cc4048926b1b18cb7b8f65d55a05d0eeb5994f8c3f801bb3e5217d7ca5
   category: main
   optional: false
-- name: annotated-types
-  version: 0.5.0
-  manager: conda
-  platform: osx-arm64
-  dependencies:
-    python: '>=3.7'
-    typing-extensions: '>=4.0.0'
-  url: https://conda.anaconda.org/conda-forge/noarch/annotated-types-0.5.0-pyhd8ed1ab_0.conda
-  hash:
-    md5: 578ae086f225bc2380c79f3b551ff2f7
-    sha256: bbabfd4400b03ba6c50d0a55e777e0c3ba900af8dabedb9b8aded774484b5d53
-  category: main
-  optional: false
 - name: async-timeout
   version: 4.0.3
   manager: conda
@@ -4710,18 +4808,18 @@ package:
     sha256: c39a328350cba6e1d3b756e116ffd46e46eed8fc0f6f2e9ed6860d418e6d8186
   category: main
   optional: false
-- name: pydantic-core
-  version: 2.10.1
+- name: pydantic
+  version: 1.10.12
   manager: conda
   platform: osx-arm64
   dependencies:
     python: '>=3.10,<3.11.0a0'
     python_abi: 3.10.*
-    typing-extensions: '>=4.6.0'
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/pydantic-core-2.10.1-py310had9acf8_0.conda
+    typing-extensions: '>=4.2.0'
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/pydantic-1.10.12-py310h2aa6e3c_1.conda
   hash:
-    md5: ef4fe87da3a5f9e8f2bca9b7af57b1cb
-    sha256: e59d8a76b84303f9c202384f964f7248887ee5bd17df98353c8d0b2cdba50665
+    md5: 08a9233d9669ec9017bce6085bc5b8f5
+    sha256: 0d7831db11f2476a91615587e630972950da9e81a2f9641b685d39ce8d25eb9f
   category: main
   optional: false
 - name: requests
@@ -4738,6 +4836,21 @@ package:
   hash:
     md5: a30144e4156cdbb236f99ebb49828f8b
     sha256: 9f629d6fd3c8ac5f2a198639fe7af87c4db2ac9235279164bfe0fcb49d8c4bad
+  category: main
+  optional: false
+- name: rich
+  version: 13.5.3
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    python: '>=3.7.0'
+    typing_extensions: '>=4.0.0,<5.0.0'
+    pygments: '>=2.13.0,<3.0.0'
+    markdown-it-py: '>=2.2.0'
+  url: https://conda.anaconda.org/conda-forge/noarch/rich-13.5.3-pyhd8ed1ab_0.conda
+  hash:
+    md5: a83bf2810a4e756b220f61cb8f90a736
+    sha256: 0207793d5d5fbb239ffeb5c649feaf3901d65245436a0fcbd95b48f966422ccb
   category: main
   optional: false
 - name: stack_data
@@ -4874,21 +4987,6 @@ package:
     sha256: 10e7fdc75d4b85633be6b12a70b857053987127a808caa0f88b2cba4b3ce6359
   category: main
   optional: false
-- name: pydantic
-  version: 2.4.1
-  manager: conda
-  platform: osx-arm64
-  dependencies:
-    python: '>=3.7'
-    annotated-types: '>=0.4.0'
-    typing-extensions: '>=4.6.1'
-    pydantic-core: 2.10.1
-  url: https://conda.anaconda.org/conda-forge/noarch/pydantic-2.4.1-pyhd8ed1ab_0.conda
-  hash:
-    md5: 57e71962bd9ec1b2958888de25049e11
-    sha256: eda989f66ebd5390a053d3d5dbf9a6b9eae386d84ab7bc79df0818d93527f5e2
-  category: main
-  optional: false
 - name: python-cmr
   version: 0.9.0
   manager: conda
@@ -4900,6 +4998,20 @@ package:
   hash:
     md5: 85546334d5ed8d38e085e9d9f9152748
     sha256: cb94626a74501b559ae8cf5ac6ad563cb6afa505cc334cdc3ffcdddebe2ceebe
+  category: main
+  optional: false
+- name: rich-click
+  version: 1.6.1
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    python: '>=3.7'
+    click: '>=7,<9'
+    rich: '>=10'
+  url: https://conda.anaconda.org/conda-forge/noarch/rich-click-1.6.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: 59a168d82c582248859d8dc8075da6f6
+    sha256: ed8ade65e48279dc9caff53230391d8f72bea6d55f6951fbf7fcc39d762e1e5e
   category: main
   optional: false
 - name: virtualenv
@@ -4931,6 +5043,23 @@ package:
   hash:
     md5: 8baace08a73a2481104903cfc9875ecd
     sha256: d929df4d8f6353dcdeca87589be214dd507ec3da81f11a38e58b6ffb53328db1
+  category: main
+  optional: false
+- name: bump-my-version
+  version: 0.10.0
+  manager: conda
+  platform: osx-arm64
+  dependencies:
+    click: ''
+    rich: ''
+    tomlkit: ''
+    rich-click: ''
+    python: '>=3.8'
+    pydantic: <2.0.0
+  url: https://conda.anaconda.org/conda-forge/noarch/bump-my-version-0.10.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: d0cfdd7365c03381f3d8c4402a88c50c
+    sha256: 433cc87b7e1700aaf1ed9fe6f402bfda945409379cafb0d78ed757ca74e364e5
   category: main
   optional: false
 - name: cachecontrol-with-filecache
@@ -5572,6 +5701,18 @@ package:
     sha256: cab9683af159f18b782a876afb4aa3f84512dc3c39e4315a963ba267751581da
   category: main
   optional: false
+- name: mdurl
+  version: 0.1.0
+  manager: conda
+  platform: win-64
+  dependencies:
+    python: '>=3.6'
+  url: https://conda.anaconda.org/conda-forge/noarch/mdurl-0.1.0-pyhd8ed1ab_0.tar.bz2
+  hash:
+    md5: f8dab71fdc13b1bf29a01248b156d268
+    sha256: c678b9194e025b1fb665bec30ee20aab93399203583875b1dcc0a3b52a8f5523
+  category: main
+  optional: false
 - name: more-itertools
   version: 10.1.0
   manager: conda
@@ -6132,6 +6273,19 @@ package:
     sha256: b045faba7130ab263db6a8fdc96b1a3de5fcf85c4a607c5f11a49e76851500b5
   category: main
   optional: false
+- name: markdown-it-py
+  version: 3.0.0
+  manager: conda
+  platform: win-64
+  dependencies:
+    python: '>=3.8'
+    mdurl: '>=0.1,<1'
+  url: https://conda.anaconda.org/conda-forge/noarch/markdown-it-py-3.0.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: 93a8e71256479c62074356ef6ebf501b
+    sha256: c041b0eaf7a6af3344d5dd452815cdc148d6284fec25a4fa3f4263b3a021e962
+  category: main
+  optional: false
 - name: matplotlib-inline
   version: 0.1.6
   manager: conda
@@ -6246,19 +6400,6 @@ package:
     sha256: c1ab2cf2514c0a6baa7ac3ae01ff6ab6b500626f55a31476a918f910ddb76789
   category: main
   optional: false
-- name: annotated-types
-  version: 0.5.0
-  manager: conda
-  platform: win-64
-  dependencies:
-    python: '>=3.7'
-    typing-extensions: '>=4.0.0'
-  url: https://conda.anaconda.org/conda-forge/noarch/annotated-types-0.5.0-pyhd8ed1ab_0.conda
-  hash:
-    md5: 578ae086f225bc2380c79f3b551ff2f7
-    sha256: bbabfd4400b03ba6c50d0a55e777e0c3ba900af8dabedb9b8aded774484b5d53
-  category: main
-  optional: false
 - name: async-timeout
   version: 4.0.3
   manager: conda
@@ -6339,21 +6480,36 @@ package:
     sha256: c39a328350cba6e1d3b756e116ffd46e46eed8fc0f6f2e9ed6860d418e6d8186
   category: main
   optional: false
-- name: pydantic-core
-  version: 2.10.1
+- name: pydantic
+  version: 1.10.12
   manager: conda
   platform: win-64
   dependencies:
     python: '>=3.10,<3.11.0a0'
     python_abi: 3.10.*
-    typing-extensions: '>=4.6.0'
+    typing-extensions: '>=4.2.0'
     ucrt: '>=10.0.20348.0'
     vc: '>=14.2,<15'
     vc14_runtime: '>=14.29.30139'
-  url: https://conda.anaconda.org/conda-forge/win-64/pydantic-core-2.10.1-py310h87d50f1_0.conda
+  url: https://conda.anaconda.org/conda-forge/win-64/pydantic-1.10.12-py310h8d17308_1.conda
   hash:
-    md5: 6b7fb28824fc0d932b845ca97f5ee359
-    sha256: 85010be806943823ce7714df14fedde54e71e5feaaa21fffd1f7ec7e3d7bfdcc
+    md5: 4c0fb7e2f1365061491c84d06a3c910f
+    sha256: 1c1f8f198bd2431dcc551f5c9ac3c83fa171e59b61d63981eb0b81be5c6c273c
+  category: main
+  optional: false
+- name: rich
+  version: 13.5.3
+  manager: conda
+  platform: win-64
+  dependencies:
+    python: '>=3.7.0'
+    typing_extensions: '>=4.0.0,<5.0.0'
+    pygments: '>=2.13.0,<3.0.0'
+    markdown-it-py: '>=2.2.0'
+  url: https://conda.anaconda.org/conda-forge/noarch/rich-13.5.3-pyhd8ed1ab_0.conda
+  hash:
+    md5: a83bf2810a4e756b220f61cb8f90a736
+    sha256: 0207793d5d5fbb239ffeb5c649feaf3901d65245436a0fcbd95b48f966422ccb
   category: main
   optional: false
 - name: stack_data
@@ -6495,21 +6651,6 @@ package:
     sha256: 10e7fdc75d4b85633be6b12a70b857053987127a808caa0f88b2cba4b3ce6359
   category: main
   optional: false
-- name: pydantic
-  version: 2.4.1
-  manager: conda
-  platform: win-64
-  dependencies:
-    python: '>=3.7'
-    annotated-types: '>=0.4.0'
-    typing-extensions: '>=4.6.1'
-    pydantic-core: 2.10.1
-  url: https://conda.anaconda.org/conda-forge/noarch/pydantic-2.4.1-pyhd8ed1ab_0.conda
-  hash:
-    md5: 57e71962bd9ec1b2958888de25049e11
-    sha256: eda989f66ebd5390a053d3d5dbf9a6b9eae386d84ab7bc79df0818d93527f5e2
-  category: main
-  optional: false
 - name: requests
   version: 2.31.0
   manager: conda
@@ -6524,6 +6665,20 @@ package:
   hash:
     md5: a30144e4156cdbb236f99ebb49828f8b
     sha256: 9f629d6fd3c8ac5f2a198639fe7af87c4db2ac9235279164bfe0fcb49d8c4bad
+  category: main
+  optional: false
+- name: rich-click
+  version: 1.6.1
+  manager: conda
+  platform: win-64
+  dependencies:
+    python: '>=3.7'
+    click: '>=7,<9'
+    rich: '>=10'
+  url: https://conda.anaconda.org/conda-forge/noarch/rich-click-1.6.1-pyhd8ed1ab_0.conda
+  hash:
+    md5: 59a168d82c582248859d8dc8075da6f6
+    sha256: ed8ade65e48279dc9caff53230391d8f72bea6d55f6951fbf7fcc39d762e1e5e
   category: main
   optional: false
 - name: virtualenv
@@ -6555,6 +6710,23 @@ package:
   hash:
     md5: 8baace08a73a2481104903cfc9875ecd
     sha256: d929df4d8f6353dcdeca87589be214dd507ec3da81f11a38e58b6ffb53328db1
+  category: main
+  optional: false
+- name: bump-my-version
+  version: 0.10.0
+  manager: conda
+  platform: win-64
+  dependencies:
+    click: ''
+    rich: ''
+    tomlkit: ''
+    rich-click: ''
+    python: '>=3.8'
+    pydantic: <2.0.0
+  url: https://conda.anaconda.org/conda-forge/noarch/bump-my-version-0.10.0-pyhd8ed1ab_0.conda
+  hash:
+    md5: d0cfdd7365c03381f3d8c4402a88c50c
+    sha256: 433cc87b7e1700aaf1ed9fe6f402bfda945409379cafb0d78ed757ca74e364e5
   category: main
   optional: false
 - name: cachecontrol

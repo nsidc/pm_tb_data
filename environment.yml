@@ -21,3 +21,4 @@ dependencies:
   - ipython
   - ipdb
   - conda-lock
+  - bump-my-version ~=0.10.0

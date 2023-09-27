@@ -80,6 +80,18 @@ To manually run the pre-commit hooks without a commit:
 $ pre-commit run --all-files
 ```
 
+### Creating a new version
+
+Use `bumpversion` (see
+[bump-my-version](https://github.com/callowayproject/bump-my-version)) to bump
+the specified part of the version:
+
+```
+$ bumpversion bump {major|minor|patch}
+```
+
+`bumpversion` configuration can be found in the `pyproject.toml`.
+
 
 ## Level of Support
 
