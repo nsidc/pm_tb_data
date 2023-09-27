@@ -7,30 +7,23 @@ source:
 
 build:
   number: {{ environ.get('BUILD_NUMBER', 0) }}
-  script: python setup.py install
+  script: python -m pip install . --no-deps -vv
   preserve_egg_dir: True
   noarch: python
 
 requirements:
   build:
-    - python ~=3.10.12
-    - numpy ~=1.22.4
+    - python ~=3.10.0
 
   run:
-    - python ~=3.10.12
-    - numpy ~=1.22.4
-    - h5py ~=3.8
-    - xarray ~=2023.6
-    - netCDF4 ~=1.6.3
-    - cartopy ~=0.21
-    - click ~=8.1
-    - loguru ~=0.7
-    - pydantic ~=1.9  # Definitely NOT compatible with pydantic 2.0 (!)
-    - pandas ~=1.4.4
-    - seaice ~=6.0
-    - pyresample ~=1.27
+    - python ~=3.10.0
+    - earthaccess
 
 about:
   home: https://github.com/nsidc/pm_tb_data
   license: MIT
-  summary: sea ice concentration estimates from passive microwave data
+  summary: code for accessing passive microwave brightness temperature data in a consistent manner.
+
+test:
+  imports:
+    - pm_tb_data
