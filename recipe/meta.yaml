@@ -17,7 +17,7 @@ requirements:
 
   run:
     - python ~=3.10.0
-    - earthaccess
+    - earthaccess ~=0.6.1
 
 about:
   home: https://github.com/nsidc/pm_tb_data

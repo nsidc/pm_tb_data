@@ -8,7 +8,7 @@ dependencies:
   ########################################
   # Imported dependencies and extensions #
   ########################################
-  - earthaccess
+  - earthaccess ~=0.6.1
 
   #############################
   # Non-imported dependencies #
@@ -17,8 +17,12 @@ dependencies:
   # linting
   - pre-commit
 
+  # Bulid utilities
+  - conda-build ~=3.25.0
+  - boa ~=0.15.1
+
   # other utilities
+  - bump-my-version ~=0.10.0
   - ipython
   - ipdb
   - conda-lock
-  - bump-my-version ~=0.10.0
