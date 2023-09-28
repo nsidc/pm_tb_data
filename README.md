@@ -1,4 +1,5 @@
 <img alt="NSIDC logo" src="https://nsidc.org/themes/custom/nsidc/logo.svg" width="150" />
+<img alt="NOAA@NSIDC logo" src="https://nsidc.org/sites/default/files/images/Logo/noaa_at_nsidc.png" width="150" />
 
 # NSIDC Passive Microwave Brightness Temperatures Data python libarary
 
