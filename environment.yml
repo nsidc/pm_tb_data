@@ -1,0 +1,28 @@
+name: pm_tb_data
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python ~=3.10.0
+
+  ########################################
+  # Imported dependencies and extensions #
+  ########################################
+  - earthaccess ~=0.6.1
+
+  #############################
+  # Non-imported dependencies #
+  #############################
+
+  # linting
+  - pre-commit
+
+  # Bulid utilities
+  - conda-build ~=3.25.0
+  - boa ~=0.15.1
+
+  # other utilities
+  - bump-my-version ~=0.10.0
+  - ipython
+  - ipdb
+  - conda-lock

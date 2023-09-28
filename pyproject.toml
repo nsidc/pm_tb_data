@@ -1,0 +1,84 @@
+[project]
+name = "pm_tb_data"
+version = "0.1.0"
+
+[tool.setuptools]
+packages = ["pm_tb_data"]
+include-package-data = true
+
+[tool.black]
+target-version = ["py310"]
+
+[tool.ruff]
+target-version = "py310"
+select = [
+  "F",
+  "E",
+  "W",
+  "C4",
+  "C90",
+  "I",
+  "N",
+  "D",
+  "UP",
+  "YTT",
+  "B",
+  "A",
+  "C4",
+  "T10",
+  "RUF",
+]
+
+ignore = [
+  # D1: Ignore errors requiring docstrings on everything.
+  # D203: "1 blank line required before class docstring"
+  # D213: "Multi-line docstring summary should start at the second line"
+  # E731: Lambda assignments are OK, use your best judgement.
+  # RUF010: !a, !r, !s are too magical for me.
+  "D1", "D203", "D213", "E731", "RUF010",
+]
+
+[tool.ruff.isort]
+known-first-party = ["pm_tb_data"]
+
+[tool.ruff.mccabe]
+max-complexity = 8
+
+[tool.ruff.flake8-quotes]
+inline-quotes = "double"
+
+# TODO: should mypy be pre-commit?
+[tool.mypy]
+python_version = "3.10"
+incremental = true
+strict = false
+show_error_codes = true
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
+warn_unreachable = true
+check_untyped_defs = true
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+module = [ "requests.*", "earthaccess.*", ]
+ignore_missing_imports = true
+
+
+[tool.bumpversion]
+current_version = "0.1.0"
+commit = false
+tag = false
+
+[[tool.bumpversion.files]]
+filename = "pm_tb_data/__init__.py"
+search   = '__version__ = "v{current_version}"'
+replace  = '__version__ = "v{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "./recipe/meta.yaml"
+search = 'version: "{current_version}"'
+replace = 'version: "{new_version}"'
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+search = 'version = "{current_version}"'
+replace = 'version = "{new_version}"'
