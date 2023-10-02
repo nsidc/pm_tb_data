@@ -203,14 +203,14 @@ def get_a2l1c_625_tbs(
                 tbfn_template=ncfn_template,
                 timeframe=timeframe,
             )
-        except FileNotFoundError:
+        except FileNotFoundError as err:
             raise FileNotFoundError(
                 f"Could not find a2l1c input files in base_dir: {base_dir},"
                 f" date: {date},"
                 f" hemisphere: {hemisphere},"
                 f" ncfn_template: {ncfn_template},"
                 f" timeframe: {timeframe}"
-            )
+            ) from err
 
     tb_data = _normalize_a2l1c_625_tbs(data_fields)
 

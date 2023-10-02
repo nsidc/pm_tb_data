@@ -38,9 +38,6 @@ ignore = [
   "D1", "D203", "D213", "E731", "RUF010",
 ]
 
-# Temporary ignores
-extend-ignore = ["B904", "UP007"]
-
 [tool.ruff.isort]
 known-first-party = ["pm_tb_data"]
 

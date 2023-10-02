@@ -181,9 +181,7 @@ def update_netcdf_file(nc_path, file_date, file_gridid, ubyte_conc):
 
 def derive_geotiff_name_a2l1c(nc_fname):
     # Determine a geotiff name corresponding to the nc filename
-    try:
-        assert ".nc" in nc_fname.name
-    except AssertionError:
+    if ".nc" not in nc_fname.name:
         raise ValueError(f"expected .nc in filename: {nc_fname}")
 
     geotiff_dirname = nc_fname.parent
@@ -203,14 +201,10 @@ def get_filename_attrs_a2l1c(fn):
     alg, hem, ymd, _, tbsrc, res = base_filename.split("_")
 
     # Expecting only two possible grid types: EASE2 NH|SH at 6.25km
-    try:
-        assert alg == "bt"
-    except AssertionError:
+    if alg != "bt":
         raise ValueError(f'Expecting alg "bt", but got: {alg}')
 
-    try:
-        assert hem in ("NH", "SH")
-    except AssertionError:
+    if hem not in ("NH", "SH"):
         raise ValueError(f"Expected hem of NH or SH, but got: {hem}")
 
     try:
@@ -219,14 +213,10 @@ def get_filename_attrs_a2l1c(fn):
         print(f"Could not determine date from filename {fn}")
         raise e
 
-    try:
-        assert tbsrc in ("a2l1c",)
-    except AssertionError:
+    if tbsrc != "a2l1c":
         raise ValueError(f"Expecting tbsrc of a2l1c, but got: {tbsrc}")
 
-    try:
-        assert res == "6.25km"
-    except AssertionError:
+    if res != "6.25km":
         raise ValueError(f"Expecting resolution of 6.25km, but got: {res}")
 
     if hem == "NH" and res == "6.25km":
@@ -252,10 +242,7 @@ def add_info_to_netcdf_file_a2l1c(nc_path):
     ds.close()
 
     rounded_conc = np.round(ds_conc)
-    try:
-        assert rounded_conc.min() >= 0
-        assert rounded_conc.max() <= 255
-    except AssertionError:
+    if rounded_conc.min() < 0 or rounded_conc.max() > 255:
         raise ValueError(
             "Concentration outside expect bounds of 0 "
             f"({rounded_conc.min()}) and 255 ({rounded_conc.max()})"
