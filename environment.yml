@@ -9,6 +9,7 @@ dependencies:
   # Imported dependencies and extensions #
   ########################################
   - earthaccess ~=0.6.1
+  - pydantic ~=1.0
 
   #############################
   # Non-imported dependencies #

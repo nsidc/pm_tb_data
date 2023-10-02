@@ -59,7 +59,7 @@ check_untyped_defs = true
 warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
-module = [ "requests.*", "earthaccess.*", ]
+module = [ "requests.*", "earthaccess.*", "pydantic.*"]
 ignore_missing_imports = true
 
 
