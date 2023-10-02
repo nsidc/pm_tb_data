@@ -1,6 +1,6 @@
-<img alt="NSIDC logo" src="https://nsidc.org/themes/custom/nsidc/logo.svg" width="150" />
-<img alt="NOAA@NSIDC logo" src="https://nsidc.org/sites/default/files/images/Logo/noaa_at_nsidc.png" width="150" />
-<img alt="NASA logo" src="https://gpm.nasa.gov/sites/default/files/document_files/NASA-Logo-Large.png" width="150" />
+<img alt="NSIDC logo" src="https://nsidc.org/themes/custom/nsidc/logo.svg" width="125" />
+<img alt="NOAA@NSIDC logo" src="https://nsidc.org/sites/default/files/images/Logo/noaa_at_nsidc.png" width="125" />
+<img alt="NASA logo" src="https://gpm.nasa.gov/sites/default/files/document_files/NASA-Logo-Large.png" width="125" />
 
 # NSIDC Passive Microwave Brightness Temperatures Data python libarary
 
