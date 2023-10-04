@@ -96,3 +96,10 @@ replace = 'version = "{new_version}"'
 testpaths = [
   "tests",
 ]
+
+[tool.vulture]
+paths = ["pm_tb_data", "tests"]
+# A min confidence of 60 or lower will trigger errors around functions not being
+# used.
+# TODO: reduce min confidence and add more tests!
+min_confidence = 65
