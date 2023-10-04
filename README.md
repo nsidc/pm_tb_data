@@ -1,4 +1,8 @@
-<img alt="NSIDC logo" src="https://nsidc.org/themes/custom/nsidc/logo.svg" width="150" />
+<p float="left" align="center">
+    <img alt="NSIDC logo" src="https://nsidc.org/themes/custom/nsidc/logo.svg" height="150" />
+    <img alt="NOAA@NSIDC logo" src="https://nsidc.org/sites/default/files/images/Logo/noaa_at_nsidc.png" height="150" />
+    <img alt="NASA logo" src="https://gpm.nasa.gov/sites/default/files/document_files/NASA-Logo-Large.png" height="150" />
+</p>
 
 # NSIDC Passive Microwave Brightness Temperatures Data python libarary
 
@@ -131,5 +135,5 @@ See [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Credit
 
-This software was developed by the National Snow and Ice Data Center with funding from
-multiple sources.
+This software was developed by the National Snow and Ice Data Center with
+funding from NASA and NOAA.
