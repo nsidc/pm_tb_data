@@ -4,6 +4,9 @@ import os
 import earthaccess
 import requests
 
+_URS_COOKIE = "urs_user_already_logged"
+_CHUNK_SIZE = 8 * 1024
+
 
 def _get_earthdata_creds():
     if not os.environ.get("EARTHDATA_USERNAME"):
@@ -17,10 +20,7 @@ def _get_earthdata_creds():
     )
 
 
-URS_COOKIE = "urs_user_already_logged"
-
-
-def create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify):
+def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify):
     if not s:
         s = requests.session()
 
@@ -54,7 +54,7 @@ def create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify):
             auth=_get_earthdata_creds(),
         )
         resp.close()
-        if not (auth_resp.ok and s.cookies.get(URS_COOKIE) == "yes"):
+        if not (auth_resp.ok and s.cookies.get(_URS_COOKIE) == "yes"):
             msg = f"Authentication with Earthdata Login failed with:\n{auth_resp.text}"
             raise RuntimeError(msg)
 
@@ -63,20 +63,21 @@ def create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify):
     return s
 
 
-CHUNK_SIZE = 8 * 1024
-
-
-if __name__ == "__main__":
+# TODO: This and the associated functions (`_get_earthdata_creds` and
+# `_create_earthdata_authenticated_session`) should be updated/removed to use
+# `earthaccess` to authenticate and download files for each granule we're
+# interested in.  Currently the files it downloads from CMR do not contain the
+# actual data. See associated issue here:
+# https://github.com/nsidc/earthaccess/issues/307
+def _download_lance_files():
     results = earthaccess.search_data(short_name="AU_SI12_NRT_R04")
     results = sorted(results, key=lambda x: x["meta"]["revision-date"], reverse=True)
-    auth = earthaccess.login()
-    # files = earthaccess.download(results, "/tmp/test")
 
     for granule in results:
         # There are two links for each granule. one for lance.nsstc.nasa.gov and
         # the other for lance.itsc.uah.edu. The first one is fine.
         url = granule.data_links(access="external")[0]
-        session = create_earthdata_authenticated_session(hosts=[url], verify=True)
+        session = _create_earthdata_authenticated_session(hosts=[url], verify=True)
         with session.get(
             url,
             timeout=60,
@@ -87,7 +88,11 @@ if __name__ == "__main__":
             # -> AMSR_U2_L3_SeaIce12km_P04_20230926.he5
             fn = url.split("/")[-1]
             with open(f"/tmp/test/{fn}", "wb") as f:
-                for chunk in resp.iter_content(chunk_size=CHUNK_SIZE):
+                for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
                     f.write(chunk)
 
             print(f"wrote {fn}")
+
+
+if __name__ == "__main__":
+    _download_lance_files()
