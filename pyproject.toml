@@ -47,7 +47,6 @@ max-complexity = 8
 [tool.ruff.flake8-quotes]
 inline-quotes = "double"
 
-# TODO: should mypy be pre-commit?
 [tool.mypy]
 python_version = "3.10"
 incremental = true
