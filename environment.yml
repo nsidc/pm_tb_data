@@ -27,6 +27,7 @@ dependencies:
   # Bulid utilities
   - conda-build ~=3.25.0
   - boa ~=0.15.1
+  - anaconda-client ~=1.12.1
 
   # other utilities
   - bump-my-version ~=0.10.0
