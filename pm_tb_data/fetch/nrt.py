@@ -1,4 +1,5 @@
 """Assess access options for NRT AMSR2 LANCE data."""
+import copy
 import datetime as dt
 import os
 import re
@@ -67,26 +68,13 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
     return s
 
 
-# TODO: This and the associated functions (`_get_earthdata_creds` and
-# `_create_earthdata_authenticated_session`) should be updated/removed to use
-# `earthaccess` to authenticate and download files for each granule we're
-# interested in.  Currently the files it downloads from CMR do not contain the
-# actual data. See associated issue here:
-# https://github.com/nsidc/earthaccess/issues/307
-def download_lance_files(*, output_dir: Path, overwrite: bool = False) -> list[Path]:
-    # TODO: consider using the `temporal=("%Y-%m-%d", "%Y-%m-%d") to narrow
-    # results. For now, we want the full result list because we always need to
-    # know the latest date (which we always assume is partial, unless it's an
-    # `*_R_*` file). Note that the dates passed to `temporal` kwarg are not
-    # inclusive.
-    results = earthaccess.search_data(short_name="AU_SI12_NRT_R04")
-
+def _get_granule_info_by_date(*, earthaccess_results: list) -> dict:
     fn_pattern = re.compile(
         r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P04|R04)_(?P<file_date>\d{8}).he5"
     )
     # TODO: better name/data structure.
     granules_by_date = {}
-    for granule in results:
+    for granule in earthaccess_results:
         # The `native-id` of each granule is the filename. E.g.,
         # `AMSR_U2_L3_SeaIce12km_R04_20230930.he5`.
         filename = granule["meta"]["native-id"]
@@ -109,16 +97,46 @@ def download_lance_files(*, output_dir: Path, overwrite: bool = False) -> list[P
             "data_url": data_url,
         }
 
+        return granules_by_date
+
+
+def _filter_out_last_day(*, granules_by_date: dict) -> dict:
+    """Remove the last day of data, unless it is an R04 file."""
+    copy.deepcopy(granules_by_date)
     dates = sorted(granules_by_date.keys())
     # If the latest date is a partial file, discard it. We don't trust any data
     # files earlier than the second-to-latest, unless the latest is an R04 file.
     if granules_by_date[dates[-1]]["file_type"] == "P04":
         del granules_by_date[dates[-1]]
 
-    urls = [x["data_url"] for x in granules_by_date.values()]
+    return granules_by_date
+
+
+# TODO: This and the associated functions (`_get_earthdata_creds` and
+# `_create_earthdata_authenticated_session`) should be updated/removed to use
+# `earthaccess` to authenticate and download files for each granule we're
+# interested in.  Currently the files it downloads from CMR do not contain the
+# actual data. See associated issue here:
+# https://github.com/nsidc/earthaccess/issues/307
+def download_latest_lance_files(
+    *, output_dir: Path, overwrite: bool = False
+) -> list[Path]:
+    """Download the latest LANCE AMSR2 data files that are ready for NRT.
+
+    The latest available day of data ready for NRT is the day before the latest
+    available file, unless the latest available file is an `*_R04_*` file.
+
+    Returns a list of paths to newly downloaded data.
+    """
+    results = earthaccess.search_data(short_name="AU_SI12_NRT_R04")
+
+    granules_by_date = _get_granule_info_by_date(earthaccess_results=results)
+    filtered_granules_by_date = _filter_out_last_day(granules_by_date=granules_by_date)
+
+    urls = [x["data_url"] for x in filtered_granules_by_date.values()]
     session = _create_earthdata_authenticated_session(hosts=urls, verify=True)
     output_paths = []
-    for granule_by_date in granules_by_date.values():
+    for granule_by_date in filtered_granules_by_date.values():
         filename = granule_by_date["filename"]
         output_path = Path(output_dir / filename)
 
@@ -147,4 +165,4 @@ def download_lance_files(*, output_dir: Path, overwrite: bool = False) -> list[P
 if __name__ == "__main__":
     output_dir = Path("/tmp/lance/")
     output_dir.mkdir(exist_ok=True)
-    downloaded_paths = download_lance_files(output_dir=output_dir)
+    downloaded_paths = download_latest_lance_files(output_dir=output_dir)
