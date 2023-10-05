@@ -73,7 +73,7 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
 # interested in.  Currently the files it downloads from CMR do not contain the
 # actual data. See associated issue here:
 # https://github.com/nsidc/earthaccess/issues/307
-def download_lance_files(*, output_dir: Path) -> list[Path]:
+def download_lance_files(*, output_dir: Path, overwrite: bool = False) -> list[Path]:
     # TODO: consider using the `temporal=("%Y-%m-%d", "%Y-%m-%d") to narrow
     # results. For now, we want the full result list because we always need to
     # know the latest date (which we always assume is partial, unless it's an
@@ -119,13 +119,21 @@ def download_lance_files(*, output_dir: Path) -> list[Path]:
     session = _create_earthdata_authenticated_session(hosts=urls, verify=True)
     output_paths = []
     for granule_by_date in granules_by_date.values():
+        filename = granule_by_date["filename"]
+        output_path = Path(output_dir / filename)
+
+        if output_path.is_file() and not overwrite:
+            logger.info(
+                f"Skipped downloading {filename}. Already exists in {output_dir}"
+            )
+            continue
+
         with session.get(
             granule_by_date["data_url"],
             timeout=60,
             stream=True,
             headers={"User-Agent": "pm_tb_data"},
         ) as resp:
-            output_path = Path(output_dir / granule_by_date["filename"])
             output_paths.append(output_path)
             with open(output_path, "wb") as f:
                 for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
