@@ -30,5 +30,14 @@ jobs:
           # Increase this key to trigger cache invalidation
           cache-environment-key: 1
 
+      # Linter
       - name: "Run pre-commit tests"
         run: "pre-commit run --all-files"
+
+      # Run static type-checking
+      - name: "Run mypy"
+        run: "mypy"
+
+      # Unit tests
+      - name: "Run unit tests"
+        run: "python -m pytest"

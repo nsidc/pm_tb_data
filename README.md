@@ -60,9 +60,10 @@ Commit the changes for the `environment.yml` and the `conda-lock.yml` files.
 
 ### Running tests/CI
 
+#### Linting / formatting
 This project uses [pre-commit](https://pre-commit.com/) to run pre-commit hooks
 that check and format this project's code for stylistic consistency (using
-`ruff` and `black`) and perform typechecking (`mypy`).
+`ruff` and `black`) .
 
 The pre-commit configuration for this project can be found in
 `.pre-commit-config.yaml`. Configuration for specific tools (e.g., `mypy`) is
@@ -82,6 +83,22 @@ To manually run the pre-commit hooks without a commit:
 
 ```
 $ pre-commit run --all-files
+```
+
+#### Running unit tests
+
+Use `pytest` to run unit tests:
+
+```
+$ python -m pytest
+```
+
+#### Type-checking
+
+Use `mypy` to run static typechecking
+
+```
+$ mypy
 ```
 
 ### Creating a new version

@@ -49,6 +49,7 @@ inline-quotes = "double"
 
 [tool.mypy]
 python_version = "3.10"
+packages = ["pm_tb_data"]
 incremental = true
 strict = false
 show_error_codes = true
@@ -56,9 +57,17 @@ enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 warn_unreachable = true
 check_untyped_defs = true
 warn_unused_ignores = true
+plugins = ["numpy.typing.mypy_plugin", ]
 
 [[tool.mypy.overrides]]
-module = [ "requests.*", "earthaccess.*", ]
+module = [
+  "requests.*",
+  "earthaccess.*",
+  "xarray.*",
+  "netCDF4.*",
+  "loguru.*",
+  "rasterio.*",
+]
 ignore_missing_imports = true
 
 
@@ -81,3 +90,15 @@ replace = 'version: "{new_version}"'
 filename = "pyproject.toml"
 search = 'version = "{current_version}"'
 replace = 'version = "{new_version}"'
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tests",
+]
+
+[tool.vulture]
+paths = ["pm_tb_data", "tests"]
+# A min confidence of 60 or lower will trigger errors around functions not being
+# used.
+# TODO: reduce min confidence and add more tests!
+min_confidence = 65
