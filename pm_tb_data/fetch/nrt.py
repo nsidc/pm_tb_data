@@ -4,9 +4,11 @@ import datetime as dt
 import os
 import re
 from pathlib import Path
+from typing import Literal, TypedDict, cast
 
 import earthaccess
 import requests
+from earthaccess.results import DataGranule
 from loguru import logger
 
 _URS_COOKIE = "urs_user_already_logged"
@@ -68,13 +70,25 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
     return s
 
 
-def _get_granule_info_by_date(*, earthaccess_results: list) -> dict:
+FileType = Literal["R04", "P04"]
+
+
+class GranuleInfo(TypedDict):
+    file_type: FileType
+    granule: DataGranule
+    filename: str
+    data_url: str
+
+
+def _get_granule_info_by_date(
+    *, data_granules: list[DataGranule]
+) -> dict[dt.date, GranuleInfo]:
     fn_pattern = re.compile(
         r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P04|R04)_(?P<file_date>\d{8}).he5"
     )
     # TODO: better name/data structure.
-    granules_by_date = {}
-    for granule in earthaccess_results:
+    granules_by_date: dict[dt.date, GranuleInfo] = {}
+    for granule in data_granules:
         # The `native-id` of each granule is the filename. E.g.,
         # `AMSR_U2_L3_SeaIce12km_R04_20230930.he5`.
         filename = granule["meta"]["native-id"]
@@ -85,6 +99,7 @@ def _get_granule_info_by_date(*, earthaccess_results: list) -> dict:
                 f": {filename}."
             )
         file_type = match.group("file_type")
+        file_type = cast(FileType, file_type)
         file_date_str = match.group("file_date")
         file_date = dt.datetime.strptime(file_date_str, "%Y%m%d").date()
         # There are two links for each granule. one for lance.nsstc.nasa.gov and
@@ -100,14 +115,16 @@ def _get_granule_info_by_date(*, earthaccess_results: list) -> dict:
     return granules_by_date
 
 
-def _filter_out_last_day(*, granules_by_date: dict) -> dict:
+def _filter_out_last_day(
+    *, granules_by_date: dict[dt.date, GranuleInfo]
+) -> dict[dt.date, GranuleInfo]:
     """Remove the last day of data, unless it is an R04 file."""
-    copy.deepcopy(granules_by_date)
+    filtered_granules_by_date = copy.deepcopy(granules_by_date)
     dates = sorted(granules_by_date.keys())
     # If the latest date is a partial file, discard it. We don't trust any data
     # files earlier than the second-to-latest, unless the latest is an R04 file.
     if granules_by_date[dates[-1]]["file_type"] == "P04":
-        del granules_by_date[dates[-1]]
+        del filtered_granules_by_date[dates[-1]]
 
     return granules_by_date
 
@@ -132,7 +149,7 @@ def download_latest_lance_files(
     # simplicity, query for all of them.
     results = earthaccess.search_data(short_name="AU_SI12_NRT_R04")
 
-    granules_by_date = _get_granule_info_by_date(earthaccess_results=results)
+    granules_by_date = _get_granule_info_by_date(data_granules=results)
     filtered_granules_by_date = _filter_out_last_day(granules_by_date=granules_by_date)
 
     urls = [x["data_url"] for x in filtered_granules_by_date.values()]
