@@ -128,6 +128,8 @@ def download_latest_lance_files(
 
     Returns a list of paths to newly downloaded data.
     """
+    # LANCE only has the last 14 days worth of data at any given time. For
+    # simplicity, query for all of them.
     results = earthaccess.search_data(short_name="AU_SI12_NRT_R04")
 
     granules_by_date = _get_granule_info_by_date(earthaccess_results=results)
