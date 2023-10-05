@@ -97,7 +97,7 @@ def _get_granule_info_by_date(*, earthaccess_results: list) -> dict:
             "data_url": data_url,
         }
 
-        return granules_by_date
+    return granules_by_date
 
 
 def _filter_out_last_day(*, granules_by_date: dict) -> dict:
