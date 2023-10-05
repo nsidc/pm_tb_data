@@ -1,8 +1,12 @@
 """Assess access options for NRT AMSR2 LANCE data."""
+import datetime as dt
 import os
+import re
+from pathlib import Path
 
 import earthaccess
 import requests
+from loguru import logger
 
 _URS_COOKIE = "urs_user_already_logged"
 _CHUNK_SIZE = 8 * 1024
@@ -69,30 +73,70 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
 # interested in.  Currently the files it downloads from CMR do not contain the
 # actual data. See associated issue here:
 # https://github.com/nsidc/earthaccess/issues/307
-def _download_lance_files():
+def download_lance_files(*, output_dir: Path) -> list[Path]:
+    # TODO: consider using the `temporal=("%Y-%m-%d", "%Y-%m-%d") to narrow
+    # results. For now, we want the full result list because we always need to
+    # know the latest date (which we always assume is partial, unless it's an
+    # `*_R_*` file). Note that the dates passed to `temporal` kwarg are not
+    # inclusive.
     results = earthaccess.search_data(short_name="AU_SI12_NRT_R04")
-    results = sorted(results, key=lambda x: x["meta"]["revision-date"], reverse=True)
 
+    fn_pattern = re.compile(
+        r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P04|R04)_(?P<file_date>\d{8}).he5"
+    )
+    # TODO: better name/data structure.
+    granules_by_date = {}
     for granule in results:
+        # The `native-id` of each granule is the filename. E.g.,
+        # `AMSR_U2_L3_SeaIce12km_R04_20230930.he5`.
+        filename = granule["meta"]["native-id"]
+        if not (match := fn_pattern.match(filename)):
+            # TODO: custom `pm_tb_data` error
+            raise RuntimeError(
+                "Found unexpected filename in CMR results (`native-id`)"
+                f": {filename}."
+            )
+        file_type = match.group("file_type")
+        file_date_str = match.group("file_date")
+        file_date = dt.datetime.strptime(file_date_str, "%Y%m%d").date()
         # There are two links for each granule. one for lance.nsstc.nasa.gov and
         # the other for lance.itsc.uah.edu. The first one is fine.
-        url = granule.data_links(access="external")[0]
-        session = _create_earthdata_authenticated_session(hosts=[url], verify=True)
+        data_url = granule.data_links(access="external")[0]
+        granules_by_date[file_date] = {
+            "file_type": file_type,
+            "granule": granule,
+            "filename": filename,
+            "data_url": data_url,
+        }
+
+    dates = sorted(granules_by_date.keys())
+    # If the latest date is a partial file, discard it. We don't trust any data
+    # files earlier than the second-to-latest, unless the latest is an R04 file.
+    if granules_by_date[dates[-1]]["file_type"] == "P04":
+        del granules_by_date[dates[-1]]
+
+    urls = [x["data_url"] for x in granules_by_date.values()]
+    session = _create_earthdata_authenticated_session(hosts=urls, verify=True)
+    output_paths = []
+    for granule_by_date in granules_by_date.values():
         with session.get(
-            url,
+            granule_by_date["data_url"],
             timeout=60,
             stream=True,
-            headers={"User-Agent": "NSIDC-dev-trst2284"},
+            headers={"User-Agent": "pm_tb_data"},
         ) as resp:
-            # e.g., https://lance.nsstc.nasa.gov/.../AMSR_U2_L3_SeaIce12km_P04_20230926.he5
-            # -> AMSR_U2_L3_SeaIce12km_P04_20230926.he5
-            fn = url.split("/")[-1]
-            with open(f"/tmp/test/{fn}", "wb") as f:
+            output_path = Path(output_dir / granule_by_date["filename"])
+            output_paths.append(output_path)
+            with open(output_path, "wb") as f:
                 for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
                     f.write(chunk)
 
-            print(f"wrote {fn}")
+            logger.info(f"Wrote AMSR2 LANCE data: {output_path}")
+
+    return output_paths
 
 
 if __name__ == "__main__":
-    _download_lance_files()
+    output_dir = Path("/tmp/lance/")
+    output_dir.mkdir(exist_ok=True)
+    downloaded_paths = download_lance_files(output_dir=output_dir)
