@@ -123,7 +123,7 @@ def _filter_out_last_day(*, granules_by_date: GranuleInfoByDate) -> GranuleInfoB
     if granules_by_date[dates[-1]]["file_type"] == "P04":
         del filtered_granules_by_date[dates[-1]]
 
-    return granules_by_date
+    return filtered_granules_by_date
 
 
 # TODO: This and the associated functions (`_get_earthdata_creds` and
