@@ -75,7 +75,6 @@ FileType = Literal["R04", "P04"]
 
 class GranuleInfo(TypedDict):
     file_type: FileType
-    granule: DataGranule
     filename: str
     data_url: str
 
@@ -108,7 +107,6 @@ def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInf
         data_url = granule.data_links(access="external")[0]
         granules_by_date[file_date] = {
             "file_type": file_type,
-            "granule": granule,
             "filename": filename,
             "data_url": data_url,
         }
