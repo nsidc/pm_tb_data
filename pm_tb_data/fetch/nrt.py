@@ -80,14 +80,15 @@ class GranuleInfo(TypedDict):
     data_url: str
 
 
-def _get_granule_info_by_date(
-    *, data_granules: list[DataGranule]
-) -> dict[dt.date, GranuleInfo]:
+GranuleInfoByDate = dict[dt.date, GranuleInfo]
+
+
+def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInfoByDate:
     fn_pattern = re.compile(
         r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P04|R04)_(?P<file_date>\d{8}).he5"
     )
     # TODO: better name/data structure.
-    granules_by_date: dict[dt.date, GranuleInfo] = {}
+    granules_by_date: GranuleInfoByDate = {}
     for granule in data_granules:
         # The `native-id` of each granule is the filename. E.g.,
         # `AMSR_U2_L3_SeaIce12km_R04_20230930.he5`.
@@ -115,9 +116,7 @@ def _get_granule_info_by_date(
     return granules_by_date
 
 
-def _filter_out_last_day(
-    *, granules_by_date: dict[dt.date, GranuleInfo]
-) -> dict[dt.date, GranuleInfo]:
+def _filter_out_last_day(*, granules_by_date: GranuleInfoByDate) -> GranuleInfoByDate:
     """Remove the last day of data, unless it is an R04 file."""
     filtered_granules_by_date = copy.deepcopy(granules_by_date)
     dates = sorted(granules_by_date.keys())
