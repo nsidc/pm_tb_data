@@ -6,6 +6,9 @@ version = "0.1.0"
 packages = ["pm_tb_data"]
 include-package-data = true
 
+[tool.setuptools.package-data]
+pm_tb_data = ["py.typed"]
+
 [tool.black]
 target-version = ["py310"]
 
