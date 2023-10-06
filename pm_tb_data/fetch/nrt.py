@@ -11,6 +11,8 @@ import requests
 from earthaccess.results import DataGranule
 from loguru import logger
 
+from pm_tb_data.fetch.errors import FetchRemoteDataError
+
 _URS_COOKIE = "urs_user_already_logged"
 _CHUNK_SIZE = 8 * 1024
 
@@ -94,7 +96,7 @@ def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInf
         filename = granule["meta"]["native-id"]
         if not (match := fn_pattern.match(filename)):
             # TODO: custom `pm_tb_data` error
-            raise RuntimeError(
+            raise FetchRemoteDataError(
                 "Found unexpected filename in CMR results (`native-id`)"
                 f": {filename}."
             )

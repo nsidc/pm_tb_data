@@ -1,7 +1,10 @@
 """Tests related to AMSR2 LANCE data."""
 import datetime as dt
 
+import pytest
+
 import pm_tb_data.fetch.nrt as nrt
+from pm_tb_data.fetch.errors import FetchRemoteDataError
 
 
 def test__filter_out_last_day():
@@ -91,3 +94,24 @@ def test__get_granule_info_by_date():
     actual = nrt._get_granule_info_by_date(data_granules=[mock_data_granule])
 
     assert actual == expected
+
+
+def test__get_granule_info_by_date_raises_error():
+    class MockDataGranule:
+        def __dict__(self):
+            return {
+                "meta": {
+                    "native-id": "unexpected_filename.foo",
+                }
+            }
+
+        def __getitem__(self, *args, **_kwargs):
+            return self.__dict__()[args[0]]
+
+        def data_links(self, *args, **_kwargs):
+            return [f"www.example.com/foo/{self._filename}"]
+
+    mock_data_granule = MockDataGranule()
+
+    with pytest.raises(FetchRemoteDataError):
+        nrt._get_granule_info_by_date(data_granules=[mock_data_granule])
