@@ -58,3 +58,36 @@ def test__filter_out_last_day_unless_r04():
     assert latest_date in filtered.keys()
     assert second_date in filtered.keys()
     assert third_date in filtered.keys()
+
+
+def test__get_granule_info_by_date():
+    class MockDataGranule:
+        def __init__(self):
+            self._filename = "AMSR_U2_L3_SeaIce12km_R04_20231003.he5"
+
+        def __dict__(self):
+            return {
+                "meta": {
+                    "native-id": self._filename,
+                }
+            }
+
+        def __getitem__(self, *args, **_kwargs):
+            return self.__dict__()[args[0]]
+
+        def data_links(self, *args, **_kwargs):
+            return [f"www.example.com/foo/{self._filename}"]
+
+    mock_data_granule = MockDataGranule()
+
+    expected = {
+        dt.date(2023, 10, 3): {
+            "file_type": "R04",
+            "filename": mock_data_granule._filename,
+            "data_url": f"www.example.com/foo/{mock_data_granule._filename}",
+        }
+    }
+
+    actual = nrt._get_granule_info_by_date(data_granules=[mock_data_granule])
+
+    assert actual == expected
