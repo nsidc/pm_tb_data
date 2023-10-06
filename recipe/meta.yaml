@@ -1,6 +1,6 @@
 package:
   name: pm_tb_data
-  version: "0.1.0"
+  version: "0.1.2"
 
 source:
   path: ../
@@ -32,3 +32,4 @@ about:
 test:
   imports:
     - pm_tb_data
+    - pm_tb_data.fetch

@@ -1,10 +1,16 @@
 [project]
 name = "pm_tb_data"
-version = "0.1.0"
+version = "0.1.2"
 
 [tool.setuptools]
-packages = ["pm_tb_data"]
 include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["pm_tb_data*"]  # package names should match these glob patterns (["*"] by default)
+
+[tool.setuptools.package-data]
+pm_tb_data = ["py.typed"]
 
 [tool.black]
 target-version = ["py310"]
@@ -47,7 +53,6 @@ max-complexity = 8
 [tool.ruff.flake8-quotes]
 inline-quotes = "double"
 
-# TODO: should mypy be pre-commit?
 [tool.mypy]
 python_version = "3.10"
 packages = ["pm_tb_data", "tests"]
@@ -73,7 +78,7 @@ ignore_missing_imports = true
 
 
 [tool.bumpversion]
-current_version = "0.1.0"
+current_version = "0.1.2"
 commit = false
 tag = false
 
