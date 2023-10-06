@@ -13,6 +13,7 @@ from loguru import logger
 
 from pm_tb_data.fetch.errors import FetchRemoteDataError
 
+EXPECTED_LANCE_AMSR2_FILE_VERSION = "04"
 _URS_COOKIE = "urs_user_already_logged"
 _CHUNK_SIZE = 8 * 1024
 
@@ -72,7 +73,7 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
     return s
 
 
-FileType = Literal["R04", "P04"]
+FileType = Literal["R", "P"]
 
 
 class GranuleInfo(TypedDict):
@@ -86,7 +87,7 @@ GranuleInfoByDate = dict[dt.date, GranuleInfo]
 
 def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInfoByDate:
     fn_pattern = re.compile(
-        r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P04|R04)_(?P<file_date>\d{8}).he5"
+        r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P|R)(?P<file_version>.*)_(?P<file_date>\d{8}).he5"
     )
     # TODO: better name/data structure.
     granules_by_date: GranuleInfoByDate = {}
@@ -100,6 +101,17 @@ def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInf
                 "Found unexpected filename in CMR results (`native-id`)"
                 f": {filename}."
             )
+
+        file_version = match.group("file_version")
+        if file_version != EXPECTED_LANCE_AMSR2_FILE_VERSION:
+            logger.warning(
+                f"Unexpected version in {filename=}."
+                f" Expected {EXPECTED_LANCE_AMSR2_FILE_VERSION}."
+                f" Got {file_version} instead."
+                " Downloading anyway, but downstream code may need to be"
+                " updated for this file version."
+            )
+
         file_type = match.group("file_type")
         file_type = cast(FileType, file_type)
         file_date_str = match.group("file_date")
@@ -122,7 +134,7 @@ def _filter_out_last_day(*, granules_by_date: GranuleInfoByDate) -> GranuleInfoB
     dates = sorted(granules_by_date.keys())
     # If the latest date is a partial file, discard it. We don't trust any data
     # files earlier than the second-to-latest, unless the latest is an R04 file.
-    if granules_by_date[dates[-1]]["file_type"] == "P04":
+    if granules_by_date[dates[-1]]["file_type"] == "P":
         del filtered_granules_by_date[dates[-1]]
 
     return filtered_granules_by_date

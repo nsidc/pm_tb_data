@@ -13,17 +13,17 @@ def test__filter_out_last_day():
     third_date = latest_date - dt.timedelta(days=2)
     mock_granules: nrt.GranuleInfoByDate = {
         latest_date: {
-            "file_type": "P04",
+            "file_type": "P",
             "filename": "AMSR_U2_L3_SeaIce12km_P04_20231005.he5",
             "data_url": "www.example.com",
         },
         second_date: {
-            "file_type": "R04",
+            "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231004.he5",
             "data_url": "www.example.com",
         },
         third_date: {
-            "file_type": "R04",
+            "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231003.he5",
             "data_url": "www.example.com",
         },
@@ -41,17 +41,17 @@ def test__filter_out_last_day_unless_r04():
     third_date = latest_date - dt.timedelta(days=2)
     mock_granules: nrt.GranuleInfoByDate = {
         latest_date: {
-            "file_type": "R04",
+            "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231005.he5",
             "data_url": "www.example.com",
         },
         second_date: {
-            "file_type": "R04",
+            "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231004.he5",
             "data_url": "www.example.com",
         },
         third_date: {
-            "file_type": "R04",
+            "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231003.he5",
             "data_url": "www.example.com",
         },
@@ -85,7 +85,7 @@ def test__get_granule_info_by_date():
 
     expected = {
         dt.date(2023, 10, 3): {
-            "file_type": "R04",
+            "file_type": "R",
             "filename": mock_data_granule._filename,
             "data_url": f"www.example.com/foo/{mock_data_granule._filename}",
         }
