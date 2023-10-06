@@ -108,9 +108,6 @@ def test__get_granule_info_by_date_raises_error():
         def __getitem__(self, *args, **_kwargs):
             return self.__dict__()[args[0]]
 
-        def data_links(self, *args, **_kwargs):
-            return [f"www.example.com/foo/{self._filename}"]
-
     mock_data_granule = MockDataGranule()
 
     with pytest.raises(FetchRemoteDataError):
