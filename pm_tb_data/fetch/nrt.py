@@ -132,10 +132,11 @@ def _filter_out_last_day(*, granules_by_date: GranuleInfoByDate) -> GranuleInfoB
     """Remove the last day of data, unless it is an R04 file."""
     filtered_granules_by_date = copy.deepcopy(granules_by_date)
     dates = sorted(granules_by_date.keys())
+    latest_file_date = dates[-1]
     # If the latest date is a partial file, discard it. We don't trust any data
     # files earlier than the second-to-latest, unless the latest is an R04 file.
-    if granules_by_date[dates[-1]]["file_type"] == "P":
-        del filtered_granules_by_date[dates[-1]]
+    if granules_by_date[latest_file_date]["file_type"] == "P":
+        del filtered_granules_by_date[latest_file_date]
 
     return filtered_granules_by_date
 
