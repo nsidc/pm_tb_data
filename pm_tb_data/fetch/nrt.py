@@ -129,12 +129,12 @@ def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInf
 
 
 def _filter_out_last_day(*, granules_by_date: GranuleInfoByDate) -> GranuleInfoByDate:
-    """Remove the last day of data, unless it is an R04 file."""
+    """Remove the last day of data, unless it is an R file."""
     filtered_granules_by_date = copy.deepcopy(granules_by_date)
     dates = sorted(granules_by_date.keys())
     latest_file_date = dates[-1]
     # If the latest date is a partial file, discard it. We don't trust any data
-    # files earlier than the second-to-latest, unless the latest is an R04 file.
+    # files earlier than the second-to-latest, unless the latest is an R file.
     if granules_by_date[latest_file_date]["file_type"] == "P":
         del filtered_granules_by_date[latest_file_date]
 
@@ -153,7 +153,7 @@ def download_latest_lance_files(
     """Download the latest LANCE AMSR2 data files that are ready for NRT.
 
     The latest available day of data ready for NRT is the day before the latest
-    available file, unless the latest available file is an `*_R04_*` file.
+    available file, unless the latest available file is an `R` file.
 
     Returns a list of paths to newly downloaded data.
     """
