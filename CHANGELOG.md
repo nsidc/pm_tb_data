@@ -1,3 +1,8 @@
+## NEXT_VERSION
+
+* Add code to download LANCE AMSR2 data to a local directory.
+
+
 ## v0.1.2
 
 * Fix package build: use the `setuptools` `find` directive to automatically find
