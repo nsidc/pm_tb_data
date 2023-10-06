@@ -1,3 +1,8 @@
+## v0.1.2
+
+* Fix package build: use the `setuptools` `find` directive to automatically find
+  packages within `pm_tb_data`.
+
 ## v0.1.1
 
 * Add `py.typed` to built package-data.

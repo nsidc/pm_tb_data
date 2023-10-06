@@ -3,8 +3,11 @@ name = "pm_tb_data"
 version = "0.1.1"
 
 [tool.setuptools]
-packages = ["pm_tb_data"]
 include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]  # list of folders that contain the packages (["."] by default)
+include = ["pm_tb_data*"]  # package names should match these glob patterns (["*"] by default)
 
 [tool.setuptools.package-data]
 pm_tb_data = ["py.typed"]

@@ -32,3 +32,4 @@ about:
 test:
   imports:
     - pm_tb_data
+    - pm_tb_data.fetch
