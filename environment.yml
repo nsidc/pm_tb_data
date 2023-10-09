@@ -24,6 +24,7 @@ dependencies:
   - pre-commit
   - pytest ~=7.1
   - mypy ~=1.5.1
+  - pyfakefs ~=5.2.4
 
   # Bulid utilities
   - conda-build ~=3.25.0
