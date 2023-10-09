@@ -59,22 +59,18 @@ def _get_au_si_fp_on_disk(
 
 def _get_au_si_data_fields(
     *,
-    data_dir: Path,
     date: dt.date,
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
+    data_filepath: Path,
 ) -> xr.Dataset:
-    """Find a AU_SI* granule on disk and return the data fields as an xr ds.
+    """Return the data fields from the given `data_filepath` as an xr ds.
 
-    Returns an xr dataset of teh variables contained in the
-    `HDFEOS/GRIDS/{N|S}pPolarGrid25km/Data Fields` group.
+    Returns an xr dataset of the variables contained in the
+    `HDFEOS/GRIDS/{N|S}pPolarGrid{resolution}km/Data Fields` group.
     """
-    granule_fp = _get_au_si_fp_on_disk(
-        data_dir=data_dir, date=date, resolution=resolution
-    )
-
     ds = xr.open_dataset(
-        granule_fp,
+        data_filepath,
         group=(
             f"HDFEOS/GRIDS"
             f"/{hemisphere[0].upper()}pPolarGrid{resolution}km"
@@ -117,14 +113,14 @@ def get_au_si_tbs_from_disk(
     date: dt.date,
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
-    data_dir: Path,
+    data_filepath: Path,
 ) -> xr.Dataset:
     """Access AU_SI brightness temperatures from data files on local disk."""
     data_fields = _get_au_si_data_fields(
-        data_dir=data_dir,
         date=date,
         hemisphere=hemisphere,
         resolution=resolution,
+        data_filepath=data_filepath,
     )
     tb_data = _normalize_au_si_tbs(data_fields, resolution=resolution)
 
@@ -144,11 +140,17 @@ def get_au_si_tbs(
     # will pass in this `data_dir` as an argument.
     data_dir = Path(f"/ecs/DP1/AMSA/AU_SI{resolution}.001/")
 
+    data_filepath = _get_au_si_fp_on_disk(
+        data_dir=data_dir,
+        date=date,
+        resolution=resolution,
+    )
+
     tb_data = get_au_si_tbs_from_disk(
         date=date,
         hemisphere=hemisphere,
         resolution=resolution,
-        data_dir=data_dir,
+        data_filepath=data_filepath,
     )
 
     return tb_data
