@@ -2,7 +2,6 @@
 import copy
 import datetime as dt
 import os
-import re
 from pathlib import Path
 from typing import Literal, TypedDict, cast
 
@@ -76,6 +75,7 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
     return s
 
 
+# TODO: move to `au_si.py`?
 FileType = Literal["R", "P"]
 
 
@@ -89,16 +89,13 @@ GranuleInfoByDate = dict[dt.date, GranuleInfo]
 
 
 def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInfoByDate:
-    fn_pattern = re.compile(
-        r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P|R)(?P<file_version>.*)_(?P<file_date>\d{8}).he5"
-    )
     # TODO: better name/data structure.
     granules_by_date: GranuleInfoByDate = {}
     for granule in data_granules:
         # The `native-id` of each granule is the filename. E.g.,
         # `AMSR_U2_L3_SeaIce12km_R04_20230930.he5`.
         filename = granule["meta"]["native-id"]
-        if not (match := fn_pattern.match(filename)):
+        if not (match := au_si.AU_SI_FN_REGEX.match(filename)):
             # TODO: custom `pm_tb_data` error
             raise FetchRemoteDataError(
                 "Found unexpected filename in CMR results (`native-id`)"

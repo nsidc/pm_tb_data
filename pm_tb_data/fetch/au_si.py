@@ -24,14 +24,19 @@ from loguru import logger
 from pm_tb_data._types import Hemisphere
 
 AU_SI_RESOLUTIONS = Literal["25"] | Literal["12"]
+AU_SI_FN_REGEX = re.compile(
+    r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P|R)(?P<file_version>.*)_(?P<file_date>\d{8}).he5"
+)
+AU_SI_GLOB_PATTERN = "AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
 
 
 def _get_au_si_fp_on_disk(
-    data_dir: Path, date: dt.date, resolution: AU_SI_RESOLUTIONS
+    data_dir: Path,
+    date: dt.date,
+    resolution: AU_SI_RESOLUTIONS,
 ) -> Path:
-    fn_glob = f"AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
     expected_dir = data_dir / f"{date:%Y.%m.%d}"
-    results = tuple(expected_dir.glob(fn_glob))
+    results = tuple(expected_dir.glob(AU_SI_GLOB_PATTERN))
     if len(results) == 1:
         return results[0]
 
@@ -41,7 +46,7 @@ def _get_au_si_fp_on_disk(
         f"Could not find AU_SI{resolution} data in expected directory ({expected_dir})."
         f" Falling back to recursive search in {data_dir=}"
     )
-    results = tuple(data_dir.glob(f"**/{fn_glob}"))
+    results = tuple(data_dir.glob(f"**/{AU_SI_GLOB_PATTERN}"))
 
     if len(results) != 1:
         raise FileNotFoundError(
