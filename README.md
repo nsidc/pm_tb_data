@@ -1,4 +1,8 @@
-<img alt="NSIDC logo" src="https://nsidc.org/themes/custom/nsidc/logo.svg" width="150" />
+<p float="left" align="center">
+    <img alt="NSIDC logo" src="https://nsidc.org/themes/custom/nsidc/logo.svg" height="150" />
+    <img alt="NOAA@NSIDC logo" src="https://nsidc.org/sites/default/files/images/Logo/noaa_at_nsidc.png" height="150" />
+    <img alt="NASA logo" src="https://gpm.nasa.gov/sites/default/files/document_files/NASA-Logo-Large.png" height="150" />
+</p>
 
 # NSIDC Passive Microwave Brightness Temperatures Data python libarary
 
@@ -56,9 +60,10 @@ Commit the changes for the `environment.yml` and the `conda-lock.yml` files.
 
 ### Running tests/CI
 
+#### Linting / formatting
 This project uses [pre-commit](https://pre-commit.com/) to run pre-commit hooks
 that check and format this project's code for stylistic consistency (using
-`ruff` and `black`) and perform typechecking (`mypy`).
+`ruff` and `black`) .
 
 The pre-commit configuration for this project can be found in
 `.pre-commit-config.yaml`. Configuration for specific tools (e.g., `mypy`) is
@@ -78,6 +83,22 @@ To manually run the pre-commit hooks without a commit:
 
 ```
 $ pre-commit run --all-files
+```
+
+#### Running unit tests
+
+Use `pytest` to run unit tests:
+
+```
+$ python -m pytest
+```
+
+#### Type-checking
+
+Use `mypy` to run static typechecking
+
+```
+$ mypy
 ```
 
 ### Creating a new version
@@ -114,5 +135,5 @@ See [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Credit
 
-This software was developed by the National Snow and Ice Data Center with funding from
-multiple sources.
+This software was developed by the National Snow and Ice Data Center with
+funding from NASA and NOAA.

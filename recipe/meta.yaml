@@ -1,6 +1,6 @@
 package:
   name: pm_tb_data
-  version: "0.1.0"
+  version: "0.1.2"
 
 source:
   path: ../
@@ -18,6 +18,11 @@ requirements:
   run:
     - python ~=3.10.0
     - earthaccess ~=0.6.1
+    - numpy ~=1.22.4
+    - xarray ~=2023.6
+    - netCDF4 ~=1.6.3
+    - rasterio ~=1.3.6
+    - loguru ~=0.7
 
 about:
   home: https://github.com/nsidc/pm_tb_data
@@ -27,3 +32,4 @@ about:
 test:
   imports:
     - pm_tb_data
+    - pm_tb_data.fetch
