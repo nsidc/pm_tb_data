@@ -114,6 +114,7 @@ def get_au_si_tbs(
     resolution: AU_SI_RESOLUTIONS,
     data_dir: Path | None,
 ) -> xr.Dataset:
+    """Access AU_SI brightness temperatures from data files on local disk."""
     # TODO: re-consider this approach!
     if data_dir is None:
         data_dir = Path(f"/ecs/DP1/AMSA/AU_SI{resolution}.001/")
