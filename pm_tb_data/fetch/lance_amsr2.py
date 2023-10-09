@@ -1,4 +1,8 @@
-"""Assess access options for NRT AMSR2 LANCE data."""
+"""Code to download and access NRT AMSR2 data (AU_SI12_NRT_R04).
+
+More information about this data product can be found here:
+https://cmr.earthdata.nasa.gov/search/concepts/C1886605827-LANCEAMSR2.html
+"""
 import copy
 import datetime as dt
 import os
