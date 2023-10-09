@@ -113,7 +113,10 @@ def get_au_si_tbs(
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
 ) -> xr.Dataset:
-    """Access NSIDC AU_SI{resolution} data from disk."""
+    """Access NSIDC AU_SI{resolution} data from disk.
+
+    Returns full orbit daily average data TBs.
+    """
     # TODO: extract data dir to `seaice_ecdr`. Ultimately this function will
     # probably go away in favor of using the more generic
     # `get_au_si_tbs_from_disk`, which can be used by the `seaice_ecdr`, which

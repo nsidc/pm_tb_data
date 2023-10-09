@@ -203,7 +203,10 @@ def access_local_lance_data(
     data_dir: Path,
     hemisphere: Hemisphere,
 ) -> xr.Dataset:
-    """Access 12.5km LANCE AMSR2 data from local disk."""
+    """Access 12.5km LANCE AMSR2 data from local disk.
+
+    Returns full orbit daily average data TBs.
+    """
     data_resolution: au_si.AU_SI_RESOLUTIONS = "12"
     data_filepath = au_si.get_au_si_fp_on_disk(
         data_dir=data_dir,
