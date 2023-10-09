@@ -8,9 +8,12 @@ from typing import Literal, TypedDict, cast
 
 import earthaccess
 import requests
+import xarray as xr
 from earthaccess.results import DataGranule
 from loguru import logger
 
+from pm_tb_data._types import Hemisphere
+from pm_tb_data.fetch import au_si
 from pm_tb_data.fetch.errors import FetchRemoteDataError
 
 EXPECTED_LANCE_AMSR2_FILE_VERSION = "04"
@@ -193,7 +196,26 @@ def download_latest_lance_files(
     return output_paths
 
 
+def access_local_lance_data(
+    *, date: dt.date, data_dir: Path, hemisphere: Hemisphere
+) -> xr.Dataset:
+    """Access 12.5km LANCE AMSR2 data from local disk."""
+    data_fields = au_si.get_au_si_tbs(
+        date=date,
+        data_dir=data_dir,
+        hemisphere=hemisphere,
+        resolution="12",
+    )
+
+    return data_fields
+
+
 if __name__ == "__main__":
     output_dir = Path("/tmp/lance/")
     output_dir.mkdir(exist_ok=True)
     downloaded_paths = download_latest_lance_files(output_dir=output_dir)
+    example_data = access_local_lance_data(
+        data_dir=output_dir,
+        hemisphere="north",
+        date=dt.date(2023, 10, 3),
+    )
