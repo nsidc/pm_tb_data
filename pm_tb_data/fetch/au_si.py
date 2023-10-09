@@ -1,17 +1,7 @@
-"""Locate tb files on disk and return xarray objects representing the data.
+"""Code to access AMSR2 data (AU_SI12 and AU_SI12) from NSIDC.
 
-E.g,
-
-```
-import datetime as dt
-
-
-tbs = get_au_si25_tbs(
-    data_dir=Path('/ecs/DP1/AMSA/AU_SI25.001/'),
-    date=dt.date(2022, 6, 8),
-    hemisphere='north',
-)
-```
+* More information about AU_SI12: https://nsidc.org/data/au_si12/
+* More information about AU_SI25: https://nsidc.org/data/au_si25/
 """
 import datetime as dt
 import re
