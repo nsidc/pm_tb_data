@@ -205,7 +205,7 @@ def access_local_lance_data(
 ) -> xr.Dataset:
     """Access 12.5km LANCE AMSR2 data from local disk."""
     data_resolution: au_si.AU_SI_RESOLUTIONS = "12"
-    data_filepath = au_si._get_au_si_fp_on_disk(
+    data_filepath = au_si.get_au_si_fp_on_disk(
         data_dir=data_dir,
         date=date,
         resolution=data_resolution,

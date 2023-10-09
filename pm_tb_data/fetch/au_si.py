@@ -19,11 +19,12 @@ AU_SI_FN_REGEX = re.compile(
 )
 
 
-def _get_au_si_fp_on_disk(
+def get_au_si_fp_on_disk(
     data_dir: Path,
     date: dt.date,
     resolution: AU_SI_RESOLUTIONS,
 ) -> Path:
+    """Get the filepath to a AU_SI data file on disk."""
     glob_pattern = f"AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
     results = tuple(data_dir.glob(f"**/{glob_pattern}"))
 
@@ -127,7 +128,7 @@ def get_au_si_tbs(
     # for a range of dates, so maybe this needs re-thinking anyway.
     expected_dir = data_dir / f"{date:%Y.%m.%d}"
     try:
-        data_filepath = _get_au_si_fp_on_disk(
+        data_filepath = get_au_si_fp_on_disk(
             data_dir=expected_dir,
             date=date,
             resolution=resolution,
@@ -138,7 +139,7 @@ def get_au_si_tbs(
             f" ({expected_dir})."
             f" Falling back to recursive search in {data_dir=}"
         )
-        data_filepath = _get_au_si_fp_on_disk(
+        data_filepath = get_au_si_fp_on_disk(
             data_dir=data_dir,
             date=date,
             resolution=resolution,
