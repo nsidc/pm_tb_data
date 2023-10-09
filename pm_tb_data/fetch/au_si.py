@@ -24,7 +24,7 @@ def _get_au_si_fp_on_disk(
     date: dt.date,
     resolution: AU_SI_RESOLUTIONS,
 ) -> Path:
-    glob_pattern = "AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
+    glob_pattern = f"AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
     results = tuple(data_dir.glob(f"**/{glob_pattern}"))
 
     if len(results) != 1:
