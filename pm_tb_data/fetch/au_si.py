@@ -7,7 +7,7 @@ import datetime as dt
 
 
 tbs = get_au_si25_tbs(
-    base_dir=Path('/ecs/DP1/AMSA/AU_SI25.001/'),
+    data_dir=Path('/ecs/DP1/AMSA/AU_SI25.001/'),
     date=dt.date(2022, 6, 8),
     hemisphere='north',
 )
@@ -26,9 +26,11 @@ from pm_tb_data._types import Hemisphere
 AU_SI_RESOLUTIONS = Literal["25"] | Literal["12"]
 
 
-def _get_au_si_fp(base_dir: Path, date: dt.date, resolution: AU_SI_RESOLUTIONS) -> Path:
+def _get_au_si_fp_on_disk(
+    data_dir: Path, date: dt.date, resolution: AU_SI_RESOLUTIONS
+) -> Path:
     fn_glob = f"AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
-    expected_dir = base_dir / f"{date:%Y.%m.%d}"
+    expected_dir = data_dir / f"{date:%Y.%m.%d}"
     results = tuple(expected_dir.glob(fn_glob))
     if len(results) == 1:
         return results[0]
@@ -37,9 +39,9 @@ def _get_au_si_fp(base_dir: Path, date: dt.date, resolution: AU_SI_RESOLUTIONS) 
     # expected location.
     logger.warning(
         f"Could not find AU_SI{resolution} data in expected directory ({expected_dir})."
-        f" Falling back to recursive search in {base_dir=}"
+        f" Falling back to recursive search in {data_dir=}"
     )
-    results = tuple(base_dir.glob(f"**/{fn_glob}"))
+    results = tuple(data_dir.glob(f"**/{fn_glob}"))
 
     if len(results) != 1:
         raise FileNotFoundError(
@@ -52,7 +54,7 @@ def _get_au_si_fp(base_dir: Path, date: dt.date, resolution: AU_SI_RESOLUTIONS) 
 
 def _get_au_si_data_fields(
     *,
-    base_dir: Path,
+    data_dir: Path,
     date: dt.date,
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
@@ -62,7 +64,9 @@ def _get_au_si_data_fields(
     Returns an xr dataset of teh variables contained in the
     `HDFEOS/GRIDS/{N|S}pPolarGrid25km/Data Fields` group.
     """
-    granule_fp = _get_au_si_fp(base_dir=base_dir, date=date, resolution=resolution)
+    granule_fp = _get_au_si_fp_on_disk(
+        data_dir=data_dir, date=date, resolution=resolution
+    )
 
     ds = xr.open_dataset(
         granule_fp,
@@ -115,7 +119,7 @@ def get_au_si_tbs(
         data_dir = Path(f"/ecs/DP1/AMSA/AU_SI{resolution}.001/")
 
     data_fields = _get_au_si_data_fields(
-        base_dir=data_dir,
+        data_dir=data_dir,
         date=date,
         hemisphere=hemisphere,
         resolution=resolution,
