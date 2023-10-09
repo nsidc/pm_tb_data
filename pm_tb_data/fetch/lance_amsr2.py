@@ -194,10 +194,13 @@ def download_latest_lance_files(
 
 
 def access_local_lance_data(
-    *, date: dt.date, data_dir: Path, hemisphere: Hemisphere
+    *,
+    date: dt.date,
+    data_dir: Path,
+    hemisphere: Hemisphere,
 ) -> xr.Dataset:
     """Access 12.5km LANCE AMSR2 data from local disk."""
-    data_fields = au_si.get_au_si_tbs(
+    data_fields = au_si.get_au_si_tbs_from_disk(
         date=date,
         data_dir=data_dir,
         hemisphere=hemisphere,

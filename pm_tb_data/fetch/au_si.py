@@ -112,18 +112,14 @@ def _normalize_au_si_tbs(
     return normalized
 
 
-def get_au_si_tbs(
+def get_au_si_tbs_from_disk(
     *,
     date: dt.date,
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
-    data_dir: Path | None,
+    data_dir: Path,
 ) -> xr.Dataset:
     """Access AU_SI brightness temperatures from data files on local disk."""
-    # TODO: re-consider this approach!
-    if data_dir is None:
-        data_dir = Path(f"/ecs/DP1/AMSA/AU_SI{resolution}.001/")
-
     data_fields = _get_au_si_data_fields(
         data_dir=data_dir,
         date=date,
@@ -131,5 +127,28 @@ def get_au_si_tbs(
         resolution=resolution,
     )
     tb_data = _normalize_au_si_tbs(data_fields, resolution=resolution)
+
+    return tb_data
+
+
+def get_au_si_tbs(
+    *,
+    date: dt.date,
+    hemisphere: Hemisphere,
+    resolution: AU_SI_RESOLUTIONS,
+) -> xr.Dataset:
+    """Access NSIDC AU_SI{resolution} data from disk."""
+    # TODO: extract data dir to `seaice_ecdr`. Ultimately this function will
+    # probably go away in favor of using the more generic
+    # `get_au_si_tbs_from_disk`, which can be used by the `seaice_ecdr`, which
+    # will pass in this `data_dir` as an argument.
+    data_dir = Path(f"/ecs/DP1/AMSA/AU_SI{resolution}.001/")
+
+    tb_data = get_au_si_tbs_from_disk(
+        date=date,
+        hemisphere=hemisphere,
+        resolution=resolution,
+        data_dir=data_dir,
+    )
 
     return tb_data
