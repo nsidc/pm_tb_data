@@ -27,7 +27,6 @@ AU_SI_RESOLUTIONS = Literal["25"] | Literal["12"]
 AU_SI_FN_REGEX = re.compile(
     r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P|R)(?P<file_version>.*)_(?P<file_date>\d{8}).he5"
 )
-AU_SI_GLOB_PATTERN = "AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
 
 
 def _get_au_si_fp_on_disk(
@@ -35,23 +34,13 @@ def _get_au_si_fp_on_disk(
     date: dt.date,
     resolution: AU_SI_RESOLUTIONS,
 ) -> Path:
-    expected_dir = data_dir / f"{date:%Y.%m.%d}"
-    results = tuple(expected_dir.glob(AU_SI_GLOB_PATTERN))
-    if len(results) == 1:
-        return results[0]
-
-    # Fall back on recursively globbing if the file doesn't exist at the
-    # expected location.
-    logger.warning(
-        f"Could not find AU_SI{resolution} data in expected directory ({expected_dir})."
-        f" Falling back to recursive search in {data_dir=}"
-    )
-    results = tuple(data_dir.glob(f"**/{AU_SI_GLOB_PATTERN}"))
+    glob_pattern = "AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
+    results = tuple(data_dir.glob(f"**/{glob_pattern}"))
 
     if len(results) != 1:
         raise FileNotFoundError(
-            f"Expected to find 1 granule for AU_SI{resolution} for {date:%Y-%m-%d}."
-            f" Found {len(results)}."
+            f"Expected to find 1 data file for AU_SI{resolution} for {date:%Y-%m-%d}"
+            f" in {data_dir=}. Found {len(results)}."
         )
 
     return results[0]
@@ -140,11 +129,30 @@ def get_au_si_tbs(
     # will pass in this `data_dir` as an argument.
     data_dir = Path(f"/ecs/DP1/AMSA/AU_SI{resolution}.001/")
 
-    data_filepath = _get_au_si_fp_on_disk(
-        data_dir=data_dir,
-        date=date,
-        resolution=resolution,
-    )
+    # Look for the data using the expected file structure in
+    # `data_dir`. Fallback to a recursive search in the `data_dir` if the data
+    # are not in their expected subdir.
+    # TODO: is it really need this logic? Can we just always recursively search
+    # for the data we want in the given directory? Often we'll want filepaths
+    # for a range of dates, so maybe this needs re-thinking anyway.
+    expected_dir = data_dir / f"{date:%Y.%m.%d}"
+    try:
+        data_filepath = _get_au_si_fp_on_disk(
+            data_dir=expected_dir,
+            date=date,
+            resolution=resolution,
+        )
+    except FileNotFoundError:
+        logger.warning(
+            f"Could not find AU_SI{resolution} data in expected directory"
+            f" ({expected_dir})."
+            f" Falling back to recursive search in {data_dir=}"
+        )
+        data_filepath = _get_au_si_fp_on_disk(
+            data_dir=data_dir,
+            date=date,
+            resolution=resolution,
+        )
 
     tb_data = get_au_si_tbs_from_disk(
         date=date,
