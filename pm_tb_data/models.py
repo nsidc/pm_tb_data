@@ -1,6 +1,7 @@
 from functools import cached_property
-from typing import Literal
+from typing import Literal, NewType
 
+import xarray as xr
 from pydantic import BaseModel
 
 
@@ -28,10 +29,6 @@ class ConfigBaseModel(BaseModel):
         arbitrary_types_allowed = True
 
 
-class GridCRS(ConfigBaseModel):
-    wkt: str
-
-
 class Hemisphere(ConfigBaseModel):
     _instance = None
 
@@ -43,10 +40,9 @@ class Hemisphere(ConfigBaseModel):
         return f"{self.name[0].upper()}H"
 
 
-NORTH = Hemisphere(name="north")
-SOUTH = Hemisphere(name="south")
+TbDataSet = NewType("TbDataSet", xr.Dataset)
 
 
-class Grid(ConfigBaseModel):
-    crs: GridCRS
+class GriddedData(ConfigBaseModel):
+    data: TbDataSet
     hemisphere: Hemisphere

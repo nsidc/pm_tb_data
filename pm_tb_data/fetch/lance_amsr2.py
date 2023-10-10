@@ -11,13 +11,12 @@ from typing import Literal, TypedDict, cast
 
 import earthaccess
 import requests
-import xarray as xr
 from earthaccess.results import DataGranule
 from loguru import logger
 
-from pm_tb_data._types import Hemisphere
 from pm_tb_data.fetch import au_si
 from pm_tb_data.fetch.errors import FetchRemoteDataError
+from pm_tb_data.models import GriddedData, Hemisphere
 
 EXPECTED_LANCE_AMSR2_FILE_VERSION = "04"
 _URS_COOKIE = "urs_user_already_logged"
@@ -202,7 +201,7 @@ def access_local_lance_data(
     date: dt.date,
     data_dir: Path,
     hemisphere: Hemisphere,
-) -> xr.Dataset:
+) -> GriddedData:
     """Access 12.5km LANCE AMSR2 data from local disk.
 
     Returns full orbit daily average data TBs.
@@ -221,7 +220,9 @@ def access_local_lance_data(
         resolution=data_resolution,
     )
 
-    return data_fields
+    gridded_data = GriddedData(hemisphere=hemisphere, data=data_fields)
+
+    return gridded_data
 
 
 if __name__ == "__main__":
