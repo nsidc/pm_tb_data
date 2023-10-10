@@ -187,7 +187,11 @@ def download_latest_lance_files(
             stream=True,
             headers={"User-Agent": "pm_tb_data"},
         ) as resp:
+            resp.raise_for_status()
             output_paths.append(output_path)
+            # TODO: it would be ideal to write this to a temp dir, then move it
+            # to `output_dir`. Otherwise a failure in downloading the data could
+            # result in partially-processed data.
             with open(output_path, "wb") as f:
                 for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
                     f.write(chunk)
