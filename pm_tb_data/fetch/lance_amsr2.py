@@ -1,16 +1,22 @@
-"""Assess access options for NRT AMSR2 LANCE data."""
+"""Code to download and access NRT AMSR2 data (AU_SI12_NRT_R04).
+
+More information about this data product can be found here:
+https://cmr.earthdata.nasa.gov/search/concepts/C1886605827-LANCEAMSR2.html
+"""
 import copy
 import datetime as dt
 import os
-import re
 from pathlib import Path
 from typing import Literal, TypedDict, cast
 
 import earthaccess
 import requests
+import xarray as xr
 from earthaccess.results import DataGranule
 from loguru import logger
 
+from pm_tb_data._types import Hemisphere
+from pm_tb_data.fetch import au_si
 from pm_tb_data.fetch.errors import FetchRemoteDataError
 
 EXPECTED_LANCE_AMSR2_FILE_VERSION = "04"
@@ -73,6 +79,7 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
     return s
 
 
+# TODO: move to `au_si.py`?
 FileType = Literal["R", "P"]
 
 
@@ -86,16 +93,13 @@ GranuleInfoByDate = dict[dt.date, GranuleInfo]
 
 
 def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInfoByDate:
-    fn_pattern = re.compile(
-        r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P|R)(?P<file_version>.*)_(?P<file_date>\d{8}).he5"
-    )
     # TODO: better name/data structure.
     granules_by_date: GranuleInfoByDate = {}
     for granule in data_granules:
         # The `native-id` of each granule is the filename. E.g.,
         # `AMSR_U2_L3_SeaIce12km_R04_20230930.he5`.
         filename = granule["meta"]["native-id"]
-        if not (match := fn_pattern.match(filename)):
+        if not (match := au_si.AU_SI_FN_REGEX.match(filename)):
             # TODO: custom `pm_tb_data` error
             raise FetchRemoteDataError(
                 "Found unexpected filename in CMR results (`native-id`)"
@@ -183,7 +187,11 @@ def download_latest_lance_files(
             stream=True,
             headers={"User-Agent": "pm_tb_data"},
         ) as resp:
+            resp.raise_for_status()
             output_paths.append(output_path)
+            # TODO: it would be ideal to write this to a temp dir, then move it
+            # to `output_dir`. Otherwise a failure in downloading the data could
+            # result in partially-processed data.
             with open(output_path, "wb") as f:
                 for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
                     f.write(chunk)
@@ -193,7 +201,39 @@ def download_latest_lance_files(
     return output_paths
 
 
+def access_local_lance_data(
+    *,
+    date: dt.date,
+    data_dir: Path,
+    hemisphere: Hemisphere,
+) -> xr.Dataset:
+    """Access 12.5km LANCE AMSR2 data from local disk.
+
+    Returns full orbit daily average data TBs.
+    """
+    data_resolution: au_si.AU_SI_RESOLUTIONS = "12"
+    data_filepath = au_si.get_au_si_fp_on_disk(
+        data_dir=data_dir,
+        date=date,
+        resolution=data_resolution,
+    )
+
+    data_fields = au_si.get_au_si_tbs_from_disk(
+        date=date,
+        data_filepath=data_filepath,
+        hemisphere=hemisphere,
+        resolution=data_resolution,
+    )
+
+    return data_fields
+
+
 if __name__ == "__main__":
     output_dir = Path("/tmp/lance/")
     output_dir.mkdir(exist_ok=True)
     downloaded_paths = download_latest_lance_files(output_dir=output_dir)
+    example_data = access_local_lance_data(
+        data_dir=output_dir,
+        hemisphere="north",
+        date=dt.date(2023, 10, 3),
+    )

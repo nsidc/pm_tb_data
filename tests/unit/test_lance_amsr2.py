@@ -3,7 +3,7 @@ import datetime as dt
 
 import pytest
 
-import pm_tb_data.fetch.nrt as nrt
+import pm_tb_data.fetch.lance_amsr2 as lance_amsr2
 from pm_tb_data.fetch.errors import FetchRemoteDataError
 
 
@@ -11,7 +11,7 @@ def test__filter_out_last_day():
     latest_date = dt.date(2023, 10, 5)
     second_date = latest_date - dt.timedelta(days=1)
     third_date = latest_date - dt.timedelta(days=2)
-    mock_granules: nrt.GranuleInfoByDate = {
+    mock_granules: lance_amsr2.GranuleInfoByDate = {
         latest_date: {
             "file_type": "P",
             "filename": "AMSR_U2_L3_SeaIce12km_P04_20231005.he5",
@@ -29,7 +29,7 @@ def test__filter_out_last_day():
         },
     }
 
-    filtered = nrt._filter_out_last_day(granules_by_date=mock_granules)
+    filtered = lance_amsr2._filter_out_last_day(granules_by_date=mock_granules)
     assert latest_date not in filtered.keys()
     assert second_date in filtered.keys()
     assert third_date in filtered.keys()
@@ -39,7 +39,7 @@ def test__filter_out_last_day_unless_r04():
     latest_date = dt.date(2023, 10, 5)
     second_date = latest_date - dt.timedelta(days=1)
     third_date = latest_date - dt.timedelta(days=2)
-    mock_granules: nrt.GranuleInfoByDate = {
+    mock_granules: lance_amsr2.GranuleInfoByDate = {
         latest_date: {
             "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231005.he5",
@@ -57,7 +57,7 @@ def test__filter_out_last_day_unless_r04():
         },
     }
 
-    filtered = nrt._filter_out_last_day(granules_by_date=mock_granules)
+    filtered = lance_amsr2._filter_out_last_day(granules_by_date=mock_granules)
     assert latest_date in filtered.keys()
     assert second_date in filtered.keys()
     assert third_date in filtered.keys()
@@ -67,7 +67,7 @@ def test__filter_out_last_day_with_gap_r04():
     latest_date = dt.date(2023, 10, 5)
     second_date = latest_date - dt.timedelta(days=2)
     third_date = latest_date - dt.timedelta(days=3)
-    mock_granules: nrt.GranuleInfoByDate = {
+    mock_granules: lance_amsr2.GranuleInfoByDate = {
         latest_date: {
             "file_type": "P",
             "filename": "AMSR_U2_L3_SeaIce12km_P04_20231005.he5",
@@ -85,7 +85,7 @@ def test__filter_out_last_day_with_gap_r04():
         },
     }
 
-    filtered = nrt._filter_out_last_day(granules_by_date=mock_granules)
+    filtered = lance_amsr2._filter_out_last_day(granules_by_date=mock_granules)
     assert latest_date not in filtered.keys()
     assert second_date in filtered.keys()
     assert third_date in filtered.keys()
@@ -119,7 +119,7 @@ def test__get_granule_info_by_date():
         }
     }
 
-    actual = nrt._get_granule_info_by_date(data_granules=[mock_data_granule])
+    actual = lance_amsr2._get_granule_info_by_date(data_granules=[mock_data_granule])
 
     assert actual == expected
 
@@ -139,4 +139,4 @@ def test__get_granule_info_by_date_raises_error():
     mock_data_granule = MockDataGranule()
 
     with pytest.raises(FetchRemoteDataError):
-        nrt._get_granule_info_by_date(data_granules=[mock_data_granule])
+        lance_amsr2._get_granule_info_by_date(data_granules=[mock_data_granule])
