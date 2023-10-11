@@ -152,7 +152,9 @@ def _filter_out_last_day(*, granules_by_date: GranuleInfoByDate) -> GranuleInfoB
 # actual data. See associated issue here:
 # https://github.com/nsidc/earthaccess/issues/307
 def download_latest_lance_files(
-    *, output_dir: Path, overwrite: bool = False
+    *,
+    output_dir: Path,
+    overwrite: bool = False,
 ) -> list[Path]:
     """Download the latest LANCE AMSR2 data files that are ready for NRT.
 
@@ -187,6 +189,19 @@ def download_latest_lance_files(
             stream=True,
             headers={"User-Agent": "pm_tb_data"},
         ) as resp:
+            if resp.status_code == 404:
+                # If we receive a 404 response for a granule, log a warning and
+                # skip. We have observed this problem starting on Oct. 10,
+                # 2023. CMR reports an R file for 2023-10-09, but only a P file
+                # exists. This issue was raised on the earthdata forum, but
+                # cannot be fixed on NSIDC's side.
+                logger.warning(
+                    "Got a 404 response for granule reported by CMR:"
+                    f" url={granule_by_date['data_url']}."
+                    " This may be a problem with the LANCE CMR record. Skipping..."
+                )
+                continue
+
             resp.raise_for_status()
             output_paths.append(output_path)
             # TODO: it would be ideal to write this to a temp dir, then move it
