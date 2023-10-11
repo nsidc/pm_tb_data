@@ -155,11 +155,18 @@ def download_latest_lance_files(
     *,
     output_dir: Path,
     overwrite: bool = False,
+    fail_on_404: bool = False,
 ) -> list[Path]:
     """Download the latest LANCE AMSR2 data files that are ready for NRT.
 
     The latest available day of data ready for NRT is the day before the latest
     available file, unless the latest available file is an `R` file.
+
+    NOTE: because of a problem with CMR providing results for ganules that do
+    not exist at the specified download location, attempts to fetch data files
+    that result in a 404 response code (Not Found) will cause a warning to be
+    logged and that granule will be skipped. Setting `fail_on_404=True` will
+    cause an HttpError to be raised for these cases instead.
 
     Returns a list of paths to newly downloaded data.
     """
@@ -189,7 +196,7 @@ def download_latest_lance_files(
             stream=True,
             headers={"User-Agent": "pm_tb_data"},
         ) as resp:
-            if resp.status_code == 404:
+            if resp.status_code == 404 and not fail_on_404:
                 # If we receive a 404 response for a granule, log a warning and
                 # skip. We have observed this problem starting on Oct. 10,
                 # 2023. CMR reports an R file for 2023-10-09, but only a P file
