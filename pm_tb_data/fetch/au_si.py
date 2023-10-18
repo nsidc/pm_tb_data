@@ -13,7 +13,7 @@ from loguru import logger
 
 from pm_tb_data._types import Hemisphere
 
-AU_SI_RESOLUTIONS = Literal["25"] | Literal["12"]
+AU_SI_RESOLUTIONS = Literal["25", "12"]
 AU_SI_FN_REGEX = re.compile(
     r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P|R)(?P<file_version>.*)_(?P<file_date>\d{8}).he5"
 )
