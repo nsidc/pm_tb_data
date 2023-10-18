@@ -11,7 +11,7 @@ from typing import Literal
 import xarray as xr
 from loguru import logger
 
-from pm_tb_data._types import Hemisphere
+from pm_tb_data.models import GriddedTbs, Hemisphere
 
 AU_SI_RESOLUTIONS = Literal["25", "12"]
 AU_SI_FN_REGEX = re.compile(
@@ -53,7 +53,7 @@ def _get_au_si_data_fields(
         data_filepath,
         group=(
             f"HDFEOS/GRIDS"
-            f"/{hemisphere[0].upper()}pPolarGrid{resolution}km"
+            f"/{hemisphere.initial}pPolarGrid{resolution}km"
             "/Data Fields"
         ),
     )
@@ -94,7 +94,7 @@ def get_au_si_tbs_from_disk(
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
     data_filepath: Path,
-) -> xr.Dataset:
+) -> GriddedTbs:
     """Access AU_SI brightness temperatures from data files on local disk."""
     data_fields = _get_au_si_data_fields(
         date=date,
@@ -104,7 +104,9 @@ def get_au_si_tbs_from_disk(
     )
     tb_data = _normalize_au_si_tbs(data_fields, resolution=resolution)
 
-    return tb_data
+    gridded_tbs = GriddedTbs(data=tb_data, hemisphere=hemisphere)
+
+    return gridded_tbs
 
 
 def get_au_si_tbs(
@@ -112,7 +114,7 @@ def get_au_si_tbs(
     date: dt.date,
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
-) -> xr.Dataset:
+) -> GriddedTbs:
     """Access NSIDC AU_SI{resolution} data from disk.
 
     Returns full orbit daily average data TBs.
@@ -155,4 +157,9 @@ def get_au_si_tbs(
         data_filepath=data_filepath,
     )
 
-    return tb_data
+    gridded_tbs = GriddedTbs(
+        data=tb_data,
+        hemisphere=hemisphere,
+    )
+
+    return gridded_tbs

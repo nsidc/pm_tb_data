@@ -30,19 +30,22 @@ class ConfigBaseModel(BaseModel):
 
 
 class Hemisphere(ConfigBaseModel):
-    _instance = None
-
-    name: Literal["north"] | Literal["south"]
+    name: Literal["north", "south"]
 
     @property
     def short_name(self):
         """Returns 'NH' or 'SH'."""
         return f"{self.name[0].upper()}H"
 
+    @property
+    def initial(self):
+        """Returns 'N' or 'S'."""
+        return self.name[0].upper()
 
-TbDataSet = NewType("TbDataSet", xr.Dataset)
+
+TbDataset = NewType("TbDataset", xr.Dataset)
 
 
-class GriddedData(ConfigBaseModel):
-    data: TbDataSet
+class GriddedTbs(ConfigBaseModel):
+    data: TbDataset
     hemisphere: Hemisphere

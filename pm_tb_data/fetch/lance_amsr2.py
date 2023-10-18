@@ -14,9 +14,10 @@ import requests
 from earthaccess.results import DataGranule
 from loguru import logger
 
+from pm_tb_data.constants import NORTH
 from pm_tb_data.fetch import au_si
 from pm_tb_data.fetch.errors import FetchRemoteDataError
-from pm_tb_data.models import GriddedData, Hemisphere
+from pm_tb_data.models import GriddedTbs, Hemisphere
 
 EXPECTED_LANCE_AMSR2_FILE_VERSION = "04"
 _URS_COOKIE = "urs_user_already_logged"
@@ -227,7 +228,7 @@ def access_local_lance_data(
     date: dt.date,
     data_dir: Path,
     hemisphere: Hemisphere,
-) -> GriddedData:
+) -> GriddedTbs:
     """Access 12.5km LANCE AMSR2 data from local disk.
 
     Returns full orbit daily average data TBs.
@@ -246,7 +247,7 @@ def access_local_lance_data(
         resolution=data_resolution,
     )
 
-    gridded_data = GriddedData(hemisphere=hemisphere, data=data_fields)
+    gridded_data = GriddedTbs(hemisphere=hemisphere, data=data_fields)
 
     return gridded_data
 
@@ -257,6 +258,6 @@ if __name__ == "__main__":
     downloaded_paths = download_latest_lance_files(output_dir=output_dir)
     example_data = access_local_lance_data(
         data_dir=output_dir,
-        hemisphere="north",
+        hemisphere=NORTH,
         date=dt.date(2023, 10, 3),
     )
