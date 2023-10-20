@@ -1,4 +1,6 @@
-### Adding dependencies
+# Developing `pm_tb_data`
+
+## Adding dependencies
 
 To add new dependencies to this project, update the `environment.yml` file with
 the new dependency. Then update your conda environment:
@@ -16,9 +18,7 @@ $ conda-lock
 Commit the changes for the `environment.yml` and the `conda-lock.yml` files.
 
 
-### Running tests/CI
-
-#### Linting / formatting
+## Linting / formatting
 This project uses [pre-commit](https://pre-commit.com/) to run pre-commit hooks
 that check and format this project's code for stylistic consistency (using
 `ruff` and `black`) .
@@ -43,23 +43,22 @@ To manually run the pre-commit hooks without a commit:
 $ pre-commit run --all-files
 ```
 
-#### Running unit tests
+## Invoke (tests/common tasks)
 
-Use `pytest` to run unit tests:
-
-```
-$ python -m pytest
-```
-
-#### Type-checking
-
-Use `mypy` to run static typechecking
+This project uses `invoke` as a task runner. To see all of the available tasks:
 
 ```
-$ mypy
+$ invoke -l
+Available tasks:
+
+  test.all (test)              Run all of the tests.
+  test.ci                      Run tests not requiring access to external data.
+  test.regression              Run regression tests.
+  test.typecheck (test.mypy)   Run mypy typechecking.
+  test.unit                    Run unit tests.
 ```
 
-### Creating a new version
+## Creating a new version
 
 Use `bumpversion` (see
 [bump-my-version](https://github.com/callowayproject/bump-my-version)) to bump
