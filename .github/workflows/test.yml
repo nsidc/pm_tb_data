@@ -35,5 +35,5 @@ jobs:
         run: "pre-commit run --all-files"
 
       # Run static type-checking and unit tests
-      - name: "Run mypy"
-        run: "invoke test.ci"
+      - name: "Run CI tests not requiring data."
+        run: "PYTHONPATH=./ invoke test.ci"
