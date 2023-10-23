@@ -18,7 +18,7 @@ def typecheck(ctx):
 def unit(ctx):
     """Run unit tests."""
     print_and_run(
-        f"pytest -s {PROJECT_DIR}/tests/unit",
+        f"pytest --cov=pm_tb_data --cov-fail-under 20 -s {PROJECT_DIR}/tests/unit",
         pty=True,
     )
 
@@ -38,10 +38,22 @@ def ci(ctx):
     ...
 
 
+@task()
+def pytest(ctx):
+    """Run all tests with pytest.
+
+    Includes a code-coverage check.
+    """
+    print_and_run(
+        "pytest --cov=pm_tb_data --cov-fail-under 20 -s",
+        pty=True,
+    )
+
+
 @task(
     pre=[
         typecheck,
-        unit,
+        pytest,
     ],
     default=True,
 )
