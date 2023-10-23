@@ -35,3 +35,4 @@ dependencies:
   - ipython
   - ipdb
   - conda-lock
+  - invoke
