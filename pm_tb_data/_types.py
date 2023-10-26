@@ -1,6 +1,6 @@
-from typing import Final, Literal
+from typing import Literal
 
 Hemisphere = Literal["north", "south"]
 
-NORTH: Final = "north"
-SOUTH: Final = "south"
+NORTH: Hemisphere = "north"
+SOUTH: Hemisphere = "south"
