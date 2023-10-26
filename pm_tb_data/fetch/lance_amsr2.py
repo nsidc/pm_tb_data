@@ -248,14 +248,3 @@ def access_local_lance_data(
     )
 
     return data_fields
-
-
-if __name__ == "__main__":
-    output_dir = Path("/tmp/lance/")
-    output_dir.mkdir(exist_ok=True)
-    downloaded_paths = download_latest_lance_files(output_dir=output_dir)
-    example_data = access_local_lance_data(
-        data_dir=output_dir,
-        hemisphere="north",
-        date=dt.date(2023, 10, 3),
-    )

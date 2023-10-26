@@ -1,6 +1,7 @@
-## NEXT_VERSION
+## 0.2.0
 
 * Add code to download LANCE AMSR2 data to a local directory.
+* Define type and constants for `Hemisphere`.
 
 
 ## v0.1.2
