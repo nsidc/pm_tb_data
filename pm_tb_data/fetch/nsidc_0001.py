@@ -82,7 +82,7 @@ def get_nsidc_0001_tbs_from_disk(
         hemisphere=hemisphere,
     )
     ds = xr.open_dataset(filepath, group=sat)
-    normalized_ds = _normalize_nsidc_0001_tbs(ds=ds, date=date, sat=sat)
+    normalized_ds = _normalize_nsidc_0001_tbs(ds=ds, sat=sat)
 
     return normalized_ds
 
