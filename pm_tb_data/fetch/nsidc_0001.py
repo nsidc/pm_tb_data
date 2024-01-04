@@ -26,10 +26,10 @@ def get_nsidc_0001_fp_on_disk(
     date: dt.date,
     resolution: NSIDC_0001_RESOLUTIONS,
 ) -> Path:
-    expected_fp = (
+    expected_fn = (
         f"NSIDC0001_TB_PS_{hemisphere[0].upper()}{resolution}km_{date:%Y%m%d}_v6.0.nc"
     )
-    expected_fp = data_dir / expected_fp
+    expected_fp = data_dir / expected_fn
 
     if not expected_fp.is_file():
         raise FileNotFoundError(
