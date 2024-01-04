@@ -241,7 +241,6 @@ def access_local_lance_data(
     )
 
     data_fields = au_si.get_au_si_tbs_from_disk(
-        date=date,
         data_filepath=data_filepath,
         hemisphere=hemisphere,
         resolution=data_resolution,

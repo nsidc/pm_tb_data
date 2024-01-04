@@ -146,7 +146,6 @@ def get_au_si_tbs(
         )
 
     tb_data = get_au_si_tbs_from_disk(
-        date=date,
         hemisphere=hemisphere,
         resolution=resolution,
         data_filepath=data_filepath,
