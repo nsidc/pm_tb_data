@@ -1,6 +1,6 @@
 ## 0.3.0
 
-* Add code to fetch NSIDC-0001 data from disk
+* Add code to fetch NSIDC-0001 v6 data from disk.
 
 
 ## 0.2.0
