@@ -13,7 +13,7 @@ from typing import Literal
 
 import xarray as xr
 
-from pm_tb_data._types import NORTH, Hemisphere
+from pm_tb_data._types import Hemisphere
 
 NSIDC_0001_RESOLUTIONS = Literal["25", "12.5"]
 NSIDC_0001_SATS = Literal["F08", "F11", "F13", "F17", "F18"]
@@ -85,11 +85,3 @@ def get_nsidc_0001_tbs_from_disk(
     normalized_ds = _normalize_nsidc_0001_tbs(ds=ds, sat=sat)
 
     return normalized_ds
-
-
-if __name__ == "__main__":
-    data_dir = Path("/ecs/DP4/PM/NSIDC-0001.006/")
-    date = dt.date(2019, 1, 1)
-    tbs = get_nsidc_0001_tbs_from_disk(
-        date=date, hemisphere=NORTH, data_dir=data_dir, resolution="25", sat="F17"
-    )
