@@ -89,7 +89,6 @@ def _normalize_au_si_tbs(
 
 def get_au_si_tbs_from_disk(
     *,
-    date: dt.date,
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
     data_filepath: Path,
