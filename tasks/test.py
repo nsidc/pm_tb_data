@@ -23,6 +23,15 @@ def unit(ctx):
     )
 
 
+@task()
+def integration(ctx):
+    """Run unit tests."""
+    print_and_run(
+        f"pytest --cov=pm_tb_data -s {PROJECT_DIR}/tests/integration",
+        pty=True,
+    )
+
+
 @task(
     pre=[
         typecheck,

@@ -39,7 +39,6 @@ def get_au_si_fp_on_disk(
 
 def _get_au_si_data_fields(
     *,
-    date: dt.date,
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
     data_filepath: Path,
@@ -90,14 +89,12 @@ def _normalize_au_si_tbs(
 
 def get_au_si_tbs_from_disk(
     *,
-    date: dt.date,
     hemisphere: Hemisphere,
     resolution: AU_SI_RESOLUTIONS,
     data_filepath: Path,
 ) -> xr.Dataset:
     """Access AU_SI brightness temperatures from data files on local disk."""
     data_fields = _get_au_si_data_fields(
-        date=date,
         hemisphere=hemisphere,
         resolution=resolution,
         data_filepath=data_filepath,
@@ -149,7 +146,6 @@ def get_au_si_tbs(
         )
 
     tb_data = get_au_si_tbs_from_disk(
-        date=date,
         hemisphere=hemisphere,
         resolution=resolution,
         data_filepath=data_filepath,
