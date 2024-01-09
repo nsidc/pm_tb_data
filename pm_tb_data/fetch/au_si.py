@@ -81,6 +81,8 @@ def _normalize_au_si_tbs(
     tb_data_mapping = {}
     for var in data_fields.keys():
         if match := var_pattern.match(str(var)):
+            # Preserve variable attrs, but rename the variable and it's dims for
+            # consistency.
             tb_data_mapping[
                 f"{match.group('polarization').lower()}{match.group('channel')}"
             ] = xr.DataArray(
