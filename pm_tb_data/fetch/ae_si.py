@@ -36,6 +36,11 @@ def get_ae_si_tbs_from_disk(
         #  of the variables (no subgroups)
         engine="netcdf4",
     ) as ds:
+        # TODO: extract normalize func to amsr util module? Make it more clear
+        # this is used generically for the AU/SI_* products. Need to be careful
+        # - not everything from the au_si module can be used for ae_si. E.g.,
+        # the data are stored differently and require a different invocation of
+        # `xr.open_dataset`
         normalized = au_si._normalize_au_si_tbs(
             data_fields=ds,
             resolution=resolution,
