@@ -55,6 +55,7 @@ def _get_au_si_data_fields(
             f"/{hemisphere[0].upper()}pPolarGrid{resolution}km"
             "/Data Fields"
         ),
+        engine="netcdf4",
     )
 
     return ds
@@ -63,6 +64,7 @@ def _get_au_si_data_fields(
 def _normalize_au_si_tbs(
     data_fields: xr.Dataset,
     resolution: AU_SI_RESOLUTIONS,
+    hemisphere: Hemisphere,
 ) -> xr.Dataset:
     """Normalize the given AU_SI* Tbs.
 
@@ -72,7 +74,8 @@ def _normalize_au_si_tbs(
     {channel}{polarization} name. E.g., `SI_25km_NH_06H_DAY` becomes `h06`
     """
     var_pattern = re.compile(
-        f"SI_{resolution}km_" r"(N|S)H_(?P<channel>\d{2})(?P<polarization>H|V)_DAY"
+        f"SI_{resolution}km_{hemisphere[0].upper()}H_"
+        r"(?P<channel>\d{2})(?P<polarization>H|V)_DAY"
     )
 
     tb_data_mapping = {}
@@ -80,9 +83,11 @@ def _normalize_au_si_tbs(
         if match := var_pattern.match(str(var)):
             tb_data_mapping[
                 f"{match.group('polarization').lower()}{match.group('channel')}"
-            ] = data_fields[var]
+            ] = (("fake_y", "fake_x"), data_fields[var].data)
 
-    normalized = xr.Dataset(tb_data_mapping)
+    normalized = xr.Dataset(
+        tb_data_mapping,
+    )
 
     return normalized
 
@@ -99,7 +104,9 @@ def get_au_si_tbs_from_disk(
         resolution=resolution,
         data_filepath=data_filepath,
     )
-    tb_data = _normalize_au_si_tbs(data_fields, resolution=resolution)
+    tb_data = _normalize_au_si_tbs(
+        data_fields, resolution=resolution, hemisphere=hemisphere
+    )
 
     return tb_data
 

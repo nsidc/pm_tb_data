@@ -11,17 +11,17 @@ from pm_tb_data.fetch import nsidc_0001
 def test__normalize_nsidc_0001_tbs():
     mock_nsidc_0001_ds = xr.Dataset(
         data_vars={
-            "TB_F17_19H": ("x", np.arange(0, 5)),
-            "TB_F17_37V": ("x", np.arange(5, 10)),
-            "TB_F18_19H": ("x", np.arange(15, 20)),
-            "TB_F18_37V": ("x", np.arange(20, 25)),
+            "TB_F17_19H": (("time", "y", "x"), [np.arange(0, 6).reshape(2, 3)]),
+            "TB_F17_37V": (("time", "y", "x"), [np.arange(5, 11).reshape(2, 3)]),
+            "TB_F18_19H": (("time", "y", "x"), [np.arange(15, 21).reshape(2, 3)]),
+            "TB_F18_37V": (("time", "y", "x"), [np.arange(20, 26).reshape(2, 3)]),
         },
     )
 
     expected = xr.Dataset(
         data_vars={
-            "h19": ("x", np.arange(0, 5)),
-            "v37": ("x", np.arange(5, 10)),
+            "h19": (("fake_y", "fake_x"), np.arange(0, 6).reshape(2, 3)),
+            "v37": (("fake_y", "fake_x"), np.arange(5, 11).reshape(2, 3)),
         },
     )
     actual = nsidc_0001._normalize_nsidc_0001_tbs(

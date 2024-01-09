@@ -52,7 +52,7 @@ def _normalize_nsidc_0001_tbs(
         if match := var_pattern.match(str(var)):
             tb_data_mapping[
                 f"{match.group('polarization').lower()}{match.group('channel')}"
-            ] = ds[var]
+            ] = (("fake_y", "fake_x"), ds[var].isel(time=0).data)
 
     normalized = xr.Dataset(tb_data_mapping)
 
