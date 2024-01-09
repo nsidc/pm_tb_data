@@ -16,7 +16,8 @@ from earthaccess.results import DataGranule
 from loguru import logger
 
 from pm_tb_data._types import Hemisphere
-from pm_tb_data.fetch import au_si
+from pm_tb_data.fetch.amsr import au_si
+from pm_tb_data.fetch.amsr.util import AMSR_RESOLUTIONS
 from pm_tb_data.fetch.errors import FetchRemoteDataError
 
 EXPECTED_LANCE_AMSR2_FILE_VERSION = "04"
@@ -233,7 +234,7 @@ def access_local_lance_data(
 
     Returns full orbit daily average data TBs.
     """
-    data_resolution: au_si.AU_SI_RESOLUTIONS = "12"
+    data_resolution: AMSR_RESOLUTIONS = "12"
     data_filepath = au_si.get_au_si_fp_on_disk(
         data_dir=data_dir,
         date=date,

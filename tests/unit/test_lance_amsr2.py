@@ -3,7 +3,7 @@ import datetime as dt
 
 import pytest
 
-import pm_tb_data.fetch.lance_amsr2 as lance_amsr2
+import pm_tb_data.fetch.amsr.lance_amsr2 as lance_amsr2
 from pm_tb_data.fetch.errors import FetchRemoteDataError
 
 

@@ -6,14 +6,13 @@
 import datetime as dt
 import re
 from pathlib import Path
-from typing import Literal
 
 import xarray as xr
 from loguru import logger
 
 from pm_tb_data._types import Hemisphere
+from pm_tb_data.fetch.amsr.util import AMSR_RESOLUTIONS, normalize_amsr_tbs
 
-AU_SI_RESOLUTIONS = Literal["25", "12"]
 AU_SI_FN_REGEX = re.compile(
     r"AMSR_U2_L3_SeaIce12km_(?P<file_type>P|R)(?P<file_version>.*)_(?P<file_date>\d{8}).he5"
 )
@@ -22,7 +21,7 @@ AU_SI_FN_REGEX = re.compile(
 def get_au_si_fp_on_disk(
     data_dir: Path,
     date: dt.date,
-    resolution: AU_SI_RESOLUTIONS,
+    resolution: AMSR_RESOLUTIONS,
 ) -> Path:
     """Get the filepath to a AU_SI data file on disk."""
     glob_pattern = f"AMSR_U2_L3_SeaIce{resolution}km_*_{date:%Y%m%d}.he5"
@@ -40,7 +39,7 @@ def get_au_si_fp_on_disk(
 def _get_au_si_data_fields(
     *,
     hemisphere: Hemisphere,
-    resolution: AU_SI_RESOLUTIONS,
+    resolution: AMSR_RESOLUTIONS,
     data_filepath: Path,
 ) -> xr.Dataset:
     """Return the data fields from the given `data_filepath` as an xr ds.
@@ -61,47 +60,10 @@ def _get_au_si_data_fields(
     return ds
 
 
-def _normalize_au_si_tbs(
-    data_fields: xr.Dataset,
-    resolution: AU_SI_RESOLUTIONS,
-    hemisphere: Hemisphere,
-) -> xr.Dataset:
-    """Normalize the given AU_SI* Tbs.
-
-    Currently only returns daily average channels.
-
-    Filters out variables that are not Tbs and renames Tbs to the 'standard'
-    {channel}{polarization} name. E.g., `SI_25km_NH_06H_DAY` becomes `h06`
-    """
-    var_pattern = re.compile(
-        f"SI_{resolution}km_{hemisphere[0].upper()}H_"
-        r"(?P<channel>\d{2})(?P<polarization>H|V)_DAY"
-    )
-
-    tb_data_mapping = {}
-    for var in data_fields.keys():
-        if match := var_pattern.match(str(var)):
-            # Preserve variable attrs, but rename the variable and it's dims for
-            # consistency.
-            tb_data_mapping[
-                f"{match.group('polarization').lower()}{match.group('channel')}"
-            ] = xr.DataArray(
-                data_fields[var].data,
-                dims=("fake_y", "fake_x"),
-                attrs=data_fields[var].attrs,
-            )
-
-    normalized = xr.Dataset(
-        tb_data_mapping,
-    )
-
-    return normalized
-
-
 def get_au_si_tbs_from_disk(
     *,
     hemisphere: Hemisphere,
-    resolution: AU_SI_RESOLUTIONS,
+    resolution: AMSR_RESOLUTIONS,
     data_filepath: Path,
 ) -> xr.Dataset:
     """Access AU_SI brightness temperatures from data files on local disk."""
@@ -110,8 +72,10 @@ def get_au_si_tbs_from_disk(
         resolution=resolution,
         data_filepath=data_filepath,
     )
-    tb_data = _normalize_au_si_tbs(
-        data_fields, resolution=resolution, hemisphere=hemisphere
+    tb_data = normalize_amsr_tbs(
+        data_fields,
+        resolution=resolution,
+        hemisphere=hemisphere,
     )
 
     return tb_data
@@ -121,7 +85,7 @@ def get_au_si_tbs(
     *,
     date: dt.date,
     hemisphere: Hemisphere,
-    resolution: AU_SI_RESOLUTIONS,
+    resolution: AMSR_RESOLUTIONS,
 ) -> xr.Dataset:
     """Access NSIDC AU_SI{resolution} data from disk.
 

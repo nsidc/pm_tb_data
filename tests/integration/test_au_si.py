@@ -2,7 +2,7 @@ import datetime as dt
 from pathlib import Path
 
 from pm_tb_data._types import NORTH
-from pm_tb_data.fetch.au_si import get_au_si_tbs
+from pm_tb_data.fetch.amsr.au_si import get_au_si_tbs
 
 # Directory in which AU_SI12 V3 data is expected to be found.
 # NOTE/TODO: This path is specifc to NSIDC infrastructure. Make more generic?

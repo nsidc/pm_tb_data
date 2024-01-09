@@ -2,7 +2,7 @@ import datetime as dt
 from pathlib import Path
 
 from pm_tb_data._types import NORTH
-from pm_tb_data.fetch.ae_si import get_ae_si_tbs_from_disk
+from pm_tb_data.fetch.amsr.ae_si import get_ae_si_tbs_from_disk
 
 # Directory in which AE_SI12 V3 data is expected to be found.
 # NOTE/TODO: This path is specifc to NSIDC infrastructure. Make more generic?
