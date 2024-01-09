@@ -83,7 +83,11 @@ def _normalize_au_si_tbs(
         if match := var_pattern.match(str(var)):
             tb_data_mapping[
                 f"{match.group('polarization').lower()}{match.group('channel')}"
-            ] = (("fake_y", "fake_x"), data_fields[var].data)
+            ] = xr.DataArray(
+                data_fields[var].data,
+                dims=("fake_y", "fake_x"),
+                attrs=data_fields[var].attrs,
+            )
 
     normalized = xr.Dataset(
         tb_data_mapping,
