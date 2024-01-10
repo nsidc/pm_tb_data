@@ -8,7 +8,7 @@ from pathlib import Path
 import xarray as xr
 
 from pm_tb_data._types import Hemisphere
-from pm_tb_data.fetch import au_si
+from pm_tb_data.fetch.amsr.util import AMSR_RESOLUTIONS, normalize_amsr_tbs
 
 
 def get_ae_si_tbs_from_disk(
@@ -16,7 +16,7 @@ def get_ae_si_tbs_from_disk(
     date: dt.date,
     hemisphere: Hemisphere,
     data_dir: Path,
-    resolution: au_si.AU_SI_RESOLUTIONS,
+    resolution: AMSR_RESOLUTIONS,
 ) -> xr.Dataset:
     """Return TB data from AE_SI12."""
     expected_dir = data_dir / date.strftime("%Y.%m.%d")
@@ -36,12 +36,7 @@ def get_ae_si_tbs_from_disk(
         #  of the variables (no subgroups)
         engine="netcdf4",
     ) as ds:
-        # TODO: extract normalize func to amsr util module? Make it more clear
-        # this is used generically for the AU/SI_* products. Need to be careful
-        # - not everything from the au_si module can be used for ae_si. E.g.,
-        # the data are stored differently and require a different invocation of
-        # `xr.open_dataset`
-        normalized = au_si._normalize_au_si_tbs(
+        normalized = normalize_amsr_tbs(
             data_fields=ds,
             resolution=resolution,
             hemisphere=hemisphere,
