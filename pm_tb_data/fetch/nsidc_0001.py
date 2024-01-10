@@ -50,9 +50,15 @@ def _normalize_nsidc_0001_tbs(
     tb_data_mapping = {}
     for var in ds.keys():
         if match := var_pattern.match(str(var)):
+            # Preserve variable attrs, but rename the variable and it's dims for
+            # consistency.
             tb_data_mapping[
                 f"{match.group('polarization').lower()}{match.group('channel')}"
-            ] = ds[var]
+            ] = xr.DataArray(
+                ds[var].isel(time=0),
+                dims=("fake_y", "fake_x"),
+                attrs=ds[var].attrs,
+            )
 
     normalized = xr.Dataset(tb_data_mapping)
 

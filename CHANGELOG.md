@@ -1,6 +1,11 @@
 ## 0.3.0
 
 * Add code to fetch NSIDC-0001 v6 data from disk.
+* Add code to fetch AE_SI12 v3 from disk.
+* `AU_SI`, `AE_SI`, and `NSIDC-0001` data normalization produces 'standard'
+  xarray dataset: variables are named in a consistent way, and variables all
+  have just two dims: `fake_x` and `fake_y`. Eventually the plan is to include
+  CRS information and projected coordinates instead.
 
 
 ## 0.2.0
