@@ -1,6 +1,8 @@
 import datetime as dt
 from pathlib import Path
 
+import numpy as np
+
 from pm_tb_data._types import NORTH
 from pm_tb_data.fetch.amsr.ae_si import get_ae_si_tbs_from_disk
 
@@ -20,3 +22,9 @@ def test_get_ae_si_tbs_from_disk():
     )
 
     assert "h18" in tbs
+
+    # AE_SI tbs are not decoded by `xarray` automatically. The variables lack
+    # the metadata required to do so. By default these TBs are scaled np.int16
+    # data. The normalization code properly scales these data to Kelvins and
+    # changes the dtype to `np.float64.`
+    assert tbs.h18.dtype == np.float64

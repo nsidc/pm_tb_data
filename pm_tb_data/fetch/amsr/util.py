@@ -13,6 +13,7 @@ def normalize_amsr_tbs(
     data_fields: xr.Dataset,
     resolution: AMSR_RESOLUTIONS,
     hemisphere: Hemisphere,
+    data_product: Literal["AU_SI", "AE_SI"],
 ) -> xr.Dataset:
     """Normalize the given Tbs from AU_SI* and AE_SI* products.
 
@@ -34,15 +35,20 @@ def normalize_amsr_tbs(
             # consistency.
 
             data_var = data_fields[var]
-            if data_var.dtype == np.int16:
-                # AMSR-E TBs are int16 scaled by 10, and use 0 for missing
+            if data_product == "AE_SI":
+                # AMSR-E TBs are int16 scaled by 10, and use 0 for
+                # missing. These variables lack encoding metadata so `xarray`
+                # doesn't decode the data for us like it would for AU_SI data.
+                assert data_var.dtype == np.int16
                 data_int16 = data_var.data
                 var_is_missing = data_int16 == 0
                 data = data_int16.astype(np.float64) / 10.0
                 data[var_is_missing] = np.nan
-            else:
+            elif data_product == "AU_SI":
                 # AMSR2 TB values are properly decoded by xarray
                 data = data_var.data
+            else:
+                raise NotImplementedError(f"{data_product=} is not supported.")
 
             tb_data_mapping[
                 f"{match.group('polarization').lower()}{match.group('channel')}"
