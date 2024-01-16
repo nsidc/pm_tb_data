@@ -76,6 +76,7 @@ def get_au_si_tbs_from_disk(
         data_fields,
         resolution=resolution,
         hemisphere=hemisphere,
+        data_product="AU_SI",
     )
 
     return tb_data

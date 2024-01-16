@@ -40,6 +40,7 @@ def get_ae_si_tbs_from_disk(
             data_fields=ds,
             resolution=resolution,
             hemisphere=hemisphere,
+            data_product="AE_SI",
         )
 
     return normalized
