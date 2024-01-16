@@ -1,6 +1,7 @@
 import re
 from typing import Literal
 
+import numpy as np
 import xarray as xr
 
 from pm_tb_data._types import Hemisphere
@@ -26,14 +27,27 @@ def normalize_amsr_tbs(
     )
 
     tb_data_mapping = {}
+
     for var in data_fields.keys():
         if match := var_pattern.match(str(var)):
             # Preserve variable attrs, but rename the variable and it's dims for
             # consistency.
+
+            data_var = data_fields[var]
+            if data_var.dtype == np.int16:
+                # AMSR-E TBs are int16 scaled by 10, and use 0 for missing
+                data_int16 = data_var.data
+                var_is_missing = data_int16 == 0
+                data = data_int16.astype(np.float64) / 10.0
+                data[var_is_missing] = np.nan
+            else:
+                # AMSR2 TB values are properly decoded by xarray
+                data = data_var.data
+
             tb_data_mapping[
                 f"{match.group('polarization').lower()}{match.group('channel')}"
             ] = xr.DataArray(
-                data_fields[var].data,
+                data,
                 dims=("fake_y", "fake_x"),
                 attrs=data_fields[var].attrs,
             )
