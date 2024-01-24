@@ -17,23 +17,8 @@ target-version = ["py310"]
 
 [tool.ruff]
 target-version = "py310"
-select = [
-  "F",
-  "E",
-  "W",
-  "C4",
-  "C90",
-  "I",
-  "N",
-  "D",
-  "UP",
-  "YTT",
-  "B",
-  "A",
-  "C4",
-  "T10",
-  "RUF",
-]
+extend-fixable = ["I"]
+extend-select = ["I"]
 
 ignore = [
   # D1: Ignore errors requiring docstrings on everything.
