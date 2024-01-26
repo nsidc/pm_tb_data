@@ -11,11 +11,10 @@ from typing import Literal, TypedDict, cast
 
 import earthaccess
 import requests
-import xarray as xr
 from earthaccess.results import DataGranule
 from loguru import logger
 
-from pm_tb_data._types import Hemisphere
+from pm_tb_data._types import Hemisphere, PmTbData
 from pm_tb_data.fetch.amsr import au_si
 from pm_tb_data.fetch.amsr.util import AMSR_RESOLUTIONS
 from pm_tb_data.fetch.errors import FetchRemoteDataError
@@ -229,7 +228,7 @@ def access_local_lance_data(
     date: dt.date,
     data_dir: Path,
     hemisphere: Hemisphere,
-) -> xr.Dataset:
+) -> PmTbData:
     """Access 12.5km LANCE AMSR2 data from local disk.
 
     Returns full orbit daily average data TBs.
@@ -241,10 +240,12 @@ def access_local_lance_data(
         resolution=data_resolution,
     )
 
-    data_fields = au_si.get_au_si_tbs_from_disk(
+    tb_data = au_si.get_au_si_tbs_from_disk(
         data_filepath=data_filepath,
         hemisphere=hemisphere,
         resolution=data_resolution,
     )
 
-    return data_fields
+    tb_data.data_source = "LANCE " + tb_data.data_source
+
+    return tb_data

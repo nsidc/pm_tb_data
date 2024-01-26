@@ -12,7 +12,7 @@ DATA_DIR = Path("/ecs/DP4/PM/NSIDC-0001.006/")
 
 def test_get_nsidc_0001_tbs_from_disk():
     date = dt.date(2019, 1, 1)
-    tbs = get_nsidc_0001_tbs_from_disk(
+    tb_data = get_nsidc_0001_tbs_from_disk(
         date=date,
         hemisphere=NORTH,
         data_dir=DATA_DIR,
@@ -20,4 +20,7 @@ def test_get_nsidc_0001_tbs_from_disk():
         sat="F17",
     )
 
-    assert "h19" in tbs
+    assert tb_data.data_source == "NSIDC-0001"
+    assert tb_data.resolution == 25
+
+    assert "h19" in tb_data.tbs

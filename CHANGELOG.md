@@ -6,6 +6,8 @@
   xarray dataset: variables are named in a consistent way, and variables all
   have just two dims: `fake_x` and `fake_y`. Eventually the plan is to include
   CRS information and projected coordinates instead.
+* Introduce new `PmTbData` dataclass that ensures consistent information is
+  returned from data fetching code.
 
 
 ## 0.2.0

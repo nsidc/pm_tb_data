@@ -15,7 +15,7 @@ import numpy as np
 import numpy.typing as npt
 import xarray as xr
 
-from pm_tb_data._types import Hemisphere
+from pm_tb_data._types import Hemisphere, PmTbData
 
 
 def read_binary_tb_file(
@@ -44,8 +44,11 @@ def read_binary_tb_file(
 
 
 def get_nsidc_0007_tbs_from_disk(
-    *, date: dt.date, hemisphere: Hemisphere, data_dir: Path
-) -> xr.Dataset:
+    *,
+    date: dt.date,
+    hemisphere: Hemisphere,
+    data_dir: Path,
+) -> PmTbData:
     """Return TB data from NSIDC-0007."""
     # This assumes `data_dir` points to the "nsidc0007_smmr_radiance_seaice_v01"
     # directory. E.g., /projects/DATASETS/nsidc0007_smmr_radiance_seaice_v01/.
@@ -84,4 +87,11 @@ def get_nsidc_0007_tbs_from_disk(
 
     normalized = xr.Dataset(tb_data_mapping)
 
-    return normalized
+    pm_data = PmTbData(
+        tbs=normalized,
+        data_source="NSIDC-0007",
+        resolution=25,
+        resolution_units="km",
+    )
+
+    return pm_data

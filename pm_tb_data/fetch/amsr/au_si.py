@@ -10,7 +10,7 @@ from pathlib import Path
 import xarray as xr
 from loguru import logger
 
-from pm_tb_data._types import Hemisphere
+from pm_tb_data._types import Hemisphere, PmTbData
 from pm_tb_data.fetch.amsr.util import AMSR_RESOLUTIONS, normalize_amsr_tbs
 
 AU_SI_FN_REGEX = re.compile(
@@ -63,20 +63,29 @@ def _get_au_si_data_fields(
 def get_au_si_tbs_from_disk(
     *,
     hemisphere: Hemisphere,
+    # TODO: change to `resolution_km` and accept `12.5` instead of `12`. The
+    # `12` is just used by the data product to represent `12.5` without the `.`!
     resolution: AMSR_RESOLUTIONS,
     data_filepath: Path,
-) -> xr.Dataset:
+) -> PmTbData:
     """Access AU_SI brightness temperatures from data files on local disk."""
     data_fields = _get_au_si_data_fields(
         hemisphere=hemisphere,
         resolution=resolution,
         data_filepath=data_filepath,
     )
-    tb_data = normalize_amsr_tbs(
+    normalized = normalize_amsr_tbs(
         data_fields,
         resolution=resolution,
         hemisphere=hemisphere,
         data_product="AU_SI",
+    )
+
+    tb_data = PmTbData(
+        tbs=normalized,
+        data_source=f"AU_SI{resolution}",
+        resolution={"25": 25, "12": 12.5}[resolution],
+        resolution_units="km",
     )
 
     return tb_data
@@ -87,7 +96,7 @@ def get_au_si_tbs(
     date: dt.date,
     hemisphere: Hemisphere,
     resolution: AMSR_RESOLUTIONS,
-) -> xr.Dataset:
+) -> PmTbData:
     """Access NSIDC AU_SI{resolution} data from disk.
 
     Returns full orbit daily average data TBs.

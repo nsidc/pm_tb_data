@@ -7,7 +7,7 @@ from pathlib import Path
 
 import xarray as xr
 
-from pm_tb_data._types import Hemisphere
+from pm_tb_data._types import Hemisphere, PmTbData
 from pm_tb_data.fetch.amsr.util import AMSR_RESOLUTIONS, normalize_amsr_tbs
 
 
@@ -16,8 +16,10 @@ def get_ae_si_tbs_from_disk(
     date: dt.date,
     hemisphere: Hemisphere,
     data_dir: Path,
+    # TODO: change to `resolution_km` and accept `12.5` instead of `12`. The
+    # `12` is just used by the data product to represent `12.5` without the `.`!
     resolution: AMSR_RESOLUTIONS,
-) -> xr.Dataset:
+) -> PmTbData:
     """Return TB data from AE_SI12."""
     expected_dir = data_dir / date.strftime("%Y.%m.%d")
     expected_fn = f"AMSR_E_L3_SeaIce{resolution}km_V15_{date:%Y%m%d}.hdf"
@@ -43,4 +45,11 @@ def get_ae_si_tbs_from_disk(
             data_product="AE_SI",
         )
 
-    return normalized
+    pm_data = PmTbData(
+        tbs=normalized,
+        data_source=f"AE_SI{resolution}",
+        resolution={"25": 25, "12": 12.5}[resolution],
+        resolution_units="km",
+    )
+
+    return pm_data

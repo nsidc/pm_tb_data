@@ -8,10 +8,13 @@ DATA_DIR = Path("/projects/DATASETS/nsidc0007_smmr_radiance_seaice_v01/")
 
 
 def test_get_nsidc_0007_tbs_from_disk():
-    tbs = get_nsidc_0007_tbs_from_disk(
+    tb_data = get_nsidc_0007_tbs_from_disk(
         date=dt.date(1980, 9, 29),
         hemisphere=SOUTH,
         data_dir=DATA_DIR,
     )
 
-    assert "h37" in tbs
+    assert tb_data.data_source == "NSIDC-0007"
+    assert tb_data.resolution == 25
+
+    assert "h37" in tb_data.tbs

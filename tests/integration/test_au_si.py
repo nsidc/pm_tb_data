@@ -12,10 +12,13 @@ DATA_DIR = Path("/ecs/DP1/AMSA/AU_SI12.001/")
 
 def test_get_au_si_tbs():
     date = dt.date(2022, 3, 1)
-    tbs = get_au_si_tbs(
+    tb_data = get_au_si_tbs(
         date=date,
         hemisphere=NORTH,
         resolution="12",
     )
 
-    assert "h18" in tbs
+    assert tb_data.data_source == "AU_SI12"
+    assert tb_data.resolution == 12.5
+
+    assert "h18" in tb_data.tbs

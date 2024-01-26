@@ -13,7 +13,7 @@ from typing import Literal
 
 import xarray as xr
 
-from pm_tb_data._types import Hemisphere
+from pm_tb_data._types import Hemisphere, PmTbData
 
 NSIDC_0001_RESOLUTIONS = Literal["25", "12.5"]
 NSIDC_0001_SATS = Literal["F08", "F11", "F13", "F17", "F18"]
@@ -72,7 +72,7 @@ def get_nsidc_0001_tbs_from_disk(
     data_dir: Path,
     resolution: NSIDC_0001_RESOLUTIONS,
     sat: NSIDC_0001_SATS,
-) -> xr.Dataset:
+) -> PmTbData:
     """Return TB data from NSIDC-0001.
 
     Note that the TBs returned are resolution-dependent:
@@ -90,4 +90,11 @@ def get_nsidc_0001_tbs_from_disk(
     ds = xr.open_dataset(filepath, group=sat)
     normalized_ds = _normalize_nsidc_0001_tbs(ds=ds, sat=sat)
 
-    return normalized_ds
+    tb_data = PmTbData(
+        tbs=normalized_ds,
+        data_source="NSIDC-0001",
+        resolution=float(resolution),
+        resolution_units="km",
+    )
+
+    return tb_data
