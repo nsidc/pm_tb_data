@@ -87,7 +87,13 @@ def get_nsidc_0001_tbs_from_disk(
         resolution=resolution,
         hemisphere=hemisphere,
     )
-    ds = xr.open_dataset(filepath, group=sat)
+    try:
+        ds = xr.open_dataset(filepath, group=sat)
+    except OSError as err:
+        raise FileNotFoundError(
+            f"No sat data for expected sat in NSIDC-0001 file for {date:%Y-%m-%d}"
+            f"  Error was: {err}"
+        )
     normalized_ds = _normalize_nsidc_0001_tbs(ds=ds, sat=sat)
 
     return normalized_ds
