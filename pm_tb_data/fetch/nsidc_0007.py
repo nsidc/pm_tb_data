@@ -38,7 +38,6 @@ def read_binary_tb_file(
         # /projects/DATASETS/nsidc0007_smmr_radiance_seaice_v01/TBS/1985/AUG/850804S.37H
         print(f"ValueError trying to read from 0007 file\n{e}")
         print(f"file: {filepath}")
-        breakpoint()
         tb_data = np.zeros(grid_shape, np.dtype("<i2"))
 
     # Radiances are in 0.1 kelvins, stored as 2-byte integers, with the least
