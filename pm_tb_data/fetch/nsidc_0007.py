@@ -30,7 +30,16 @@ def read_binary_tb_file(
         south=(332, 316),
     )[hemisphere]
 
-    tb_data = np.fromfile(filepath, np.dtype("<i2")).reshape(grid_shape)
+    try:
+        tb_data = np.fromfile(filepath, np.dtype("<i2")).reshape(grid_shape)
+    except ValueError as e:
+        # TODO: we want a log statement and a warning here!
+        # NOTE: This occurs for file:
+        # /projects/DATASETS/nsidc0007_smmr_radiance_seaice_v01/TBS/1985/AUG/850804S.37H
+        print(f"ValueError trying to read from 0007 file\n{e}")
+        print(f"file: {filepath}")
+        breakpoint()
+        tb_data = np.zeros(grid_shape, np.dtype("<i2"))
 
     # Radiances are in 0.1 kelvins, stored as 2-byte integers, with the least
     # significant byte (lsb) first (lower address) and msb second (higher
