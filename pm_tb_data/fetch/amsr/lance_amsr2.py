@@ -49,6 +49,7 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
             # We don't want to accidentally fetch any data:
             stream=True,
             verify=verify,
+            timeout=5,
         )
         # Copy the headers so they can be used case-insensitively after the
         # response is closed.
@@ -87,7 +88,7 @@ FileType = Literal["R", "P"]
 class GranuleInfo(TypedDict):
     file_type: FileType
     filename: str
-    data_url: str
+    data_urls: list[str]
 
 
 GranuleInfoByDate = dict[dt.date, GranuleInfo]
@@ -122,12 +123,14 @@ def _get_granule_info_by_date(*, data_granules: list[DataGranule]) -> GranuleInf
         file_date_str = match.group("file_date")
         file_date = dt.datetime.strptime(file_date_str, "%Y%m%d").date()
         # There are two links for each granule. one for lance.nsstc.nasa.gov and
-        # the other for lance.itsc.uah.edu. The first one is fine.
-        data_url = granule.data_links(access="external")[0]
+        # the other for lance.itsc.uah.edu. There are sometimes problems with
+        # each. E.g., on Feb. 15, 2024, the lance.nsstc.nasa.gov began giving
+        # connection errors.
+        data_urls = granule.data_links(access="external")
         granules_by_date[file_date] = {
             "file_type": file_type,
             "filename": filename,
-            "data_url": data_url,
+            "data_urls": data_urls,
         }
 
     return granules_by_date
@@ -146,6 +149,34 @@ def _filter_out_last_day(*, granules_by_date: GranuleInfoByDate) -> GranuleInfoB
     return filtered_granules_by_date
 
 
+def download_data(*, data_url: str, output_path: Path, overwrite: bool) -> Path:
+    output_dir = output_path.parent
+    filename = output_path.name
+    if output_path.is_file() and not overwrite:
+        logger.info(f"Skipped downloading {filename}. Already exists in {output_dir}")
+        return output_path
+
+    session = _create_earthdata_authenticated_session(hosts=[data_url], verify=True)
+
+    with session.get(
+        data_url,
+        timeout=5,
+        stream=True,
+        headers={"User-Agent": "pm_tb_data"},
+    ) as resp:
+        resp.raise_for_status()
+        # TODO: it would be ideal to write this to a temp dir, then move it
+        # to `output_dir`. Otherwise a failure in downloading the data could
+        # result in partially-processed data.
+        with open(output_path, "wb") as f:
+            for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
+                f.write(chunk)
+
+    logger.info(f"Wrote AMSR2 LANCE data: {output_path}")
+
+    return output_path
+
+
 # TODO: This and the associated functions (`_get_earthdata_creds` and
 # `_create_earthdata_authenticated_session`) should be updated/removed to use
 # `earthaccess` to authenticate and download files for each granule we're
@@ -156,7 +187,7 @@ def download_latest_lance_files(
     *,
     output_dir: Path,
     overwrite: bool = False,
-    fail_on_404: bool = False,
+    fail_on_download_error: bool = False,
 ) -> list[Path]:
     """Download the latest LANCE AMSR2 data files that are ready for NRT.
 
@@ -166,8 +197,15 @@ def download_latest_lance_files(
     NOTE: because of a problem with CMR providing results for ganules that do
     not exist at the specified download location, attempts to fetch data files
     that result in a 404 response code (Not Found) will cause a warning to be
-    logged and that granule will be skipped. Setting `fail_on_404=True` will
+    logged and that granule will be skipped. Setting `fail_on_download_error=True` will
     cause an HttpError to be raised for these cases instead.
+
+    We have observed this problem starting on Oct. 10, 2023. CMR reports an R
+    file for 2023-10-09, but only a P file exists. This issue was raised on the
+    earthdata forum, but cannot be fixed on NSIDC's side.
+
+    We also experienced connection issues with the `lance.nsstc.nasa.gov` data
+    source on Feb. 15, 2024.
 
     Returns a list of paths to newly downloaded data.
     """
@@ -178,48 +216,27 @@ def download_latest_lance_files(
     granules_by_date = _get_granule_info_by_date(data_granules=results)
     filtered_granules_by_date = _filter_out_last_day(granules_by_date=granules_by_date)
 
-    urls = [x["data_url"] for x in filtered_granules_by_date.values()]
-    session = _create_earthdata_authenticated_session(hosts=urls, verify=True)
-    output_paths = []
+    output_paths: list[Path] = []
     for granule_by_date in filtered_granules_by_date.values():
-        filename = granule_by_date["filename"]
-        output_path = Path(output_dir / filename)
+        downloaded_data = False
+        for data_url in granule_by_date["data_urls"]:
+            filename = granule_by_date["filename"]
+            output_path = Path(output_dir / filename)
 
-        if output_path.is_file() and not overwrite:
-            logger.info(
-                f"Skipped downloading {filename}. Already exists in {output_dir}"
-            )
-            continue
-
-        with session.get(
-            granule_by_date["data_url"],
-            timeout=60,
-            stream=True,
-            headers={"User-Agent": "pm_tb_data"},
-        ) as resp:
-            if resp.status_code == 404 and not fail_on_404:
-                # If we receive a 404 response for a granule, log a warning and
-                # skip. We have observed this problem starting on Oct. 10,
-                # 2023. CMR reports an R file for 2023-10-09, but only a P file
-                # exists. This issue was raised on the earthdata forum, but
-                # cannot be fixed on NSIDC's side.
-                logger.warning(
-                    "Got a 404 response for granule reported by CMR:"
-                    f" url={granule_by_date['data_url']}."
-                    " This may be a problem with the LANCE CMR record. Skipping..."
+            try:
+                download_data(
+                    data_url=data_url,
+                    output_path=output_path,
+                    overwrite=overwrite,
                 )
-                continue
+                output_paths.append(output_path)
+                downloaded_data = True
+                break
+            except Exception as error:
+                logger.warning(f"Tried to access {data_url} unsuccessfully: {error=}.")
 
-            resp.raise_for_status()
-            output_paths.append(output_path)
-            # TODO: it would be ideal to write this to a temp dir, then move it
-            # to `output_dir`. Otherwise a failure in downloading the data could
-            # result in partially-processed data.
-            with open(output_path, "wb") as f:
-                for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
-                    f.write(chunk)
-
-            logger.info(f"Wrote AMSR2 LANCE data: {output_path}")
+        if not downloaded_data and fail_on_download_error:
+            raise RuntimeError(f"Failed do fetch data for {granule_by_date=}")
 
     return output_paths
 
