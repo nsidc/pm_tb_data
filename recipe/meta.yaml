@@ -17,7 +17,7 @@ requirements:
 
   run:
     - python ~=3.10.0
-    - earthaccess ~=0.6.1
+    - earthaccess ~=0.8.2
     - numpy ~=1.22.4
     - xarray ~=2023.6
     - netCDF4 ~=1.6.3
