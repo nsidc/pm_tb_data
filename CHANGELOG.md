@@ -1,3 +1,12 @@
+## 0.4.0
+
+* Update `earthaccess` library version to `~=0.8.2`.
+* The code that downloads `AU_SI12_NRT_R04` LANCE NRT data
+  (``pm_tb_data.fetch.amsr.lance_amsr2`) now supports trying both data URLs
+  provided by CMR (lance.nsstc.nasa.gov and lance.itsc.uah.edu) if the first one
+  fails. Sometimes one mirror is available when the other is not.
+
+
 ## 0.3.0
 
 * Add code to fetch NSIDC-0001 v6 data from disk.
