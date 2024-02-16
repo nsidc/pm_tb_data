@@ -6,7 +6,9 @@ https://cmr.earthdata.nasa.gov/search/concepts/C1886605827-LANCEAMSR2.html
 import copy
 import datetime as dt
 import os
+import shutil
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Literal, TypedDict, cast
 
 import earthaccess
@@ -168,9 +170,13 @@ def download_data(*, data_url: str, output_path: Path, overwrite: bool) -> Path:
         # TODO: it would be ideal to write this to a temp dir, then move it
         # to `output_dir`. Otherwise a failure in downloading the data could
         # result in partially-processed data.
-        with open(output_path, "wb") as f:
-            for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
-                f.write(chunk)
+        with TemporaryDirectory() as tmpdir:
+            tmpdir_path = Path(tmpdir)
+            tmp_fp = tmpdir_path / filename
+            with open(tmp_fp, "wb") as f:
+                for chunk in resp.iter_content(chunk_size=_CHUNK_SIZE):
+                    f.write(chunk)
+            shutil.move(tmp_fp, output_path)
 
     logger.info(f"Wrote AMSR2 LANCE data: {output_path}")
 
