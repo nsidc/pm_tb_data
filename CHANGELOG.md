@@ -2,10 +2,13 @@
 
 * Update `earthaccess` library version to `~=0.8.2`.
 * The code that downloads `AU_SI12_NRT_R04` LANCE NRT data
-  (``pm_tb_data.fetch.amsr.lance_amsr2`) now supports trying both data URLs
-  provided by CMR (lance.nsstc.nasa.gov and lance.itsc.uah.edu) if the first one
-  fails. Sometimes one mirror is available when the other is not.
-
+  (``pm_tb_data.fetch.amsr.lance_amsr2`) 
+    * now supports trying both data URLs provided by CMR (lance.nsstc.nasa.gov
+      and lance.itsc.uah.edu) if the first one fails. Sometimes one mirror is
+      available when the other is not.
+    * Writes partially-downloaded data to a tempdir. Once the data is fully
+      downloaded, the data are moved to the expected output dir. This prevents
+      network interruptions from resulting in partially-written data.
 
 ## 0.3.0
 
