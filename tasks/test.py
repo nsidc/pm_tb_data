@@ -18,7 +18,7 @@ def typecheck(ctx):
 def unit(ctx):
     """Run unit tests."""
     print_and_run(
-        f"pytest --cov=pm_tb_data --cov-fail-under 20 -s {PROJECT_DIR}/tests/unit",
+        f"pytest --cov=pm_tb_data --cov-fail-under 25 -s {PROJECT_DIR}/tests/unit",
         pty=True,
     )
 
@@ -54,7 +54,7 @@ def pytest(ctx):
     Includes a code-coverage check.
     """
     print_and_run(
-        "pytest --cov=pm_tb_data --cov-fail-under 20 -s",
+        "pytest --cov=pm_tb_data --cov-fail-under 35 -s",
         pty=True,
     )
 
