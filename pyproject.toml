@@ -1,6 +1,6 @@
 [project]
 name = "pm_tb_data"
-version = "0.3.0"
+version = "0.4.0"
 
 [tool.setuptools]
 include-package-data = true
@@ -63,7 +63,7 @@ ignore_missing_imports = true
 
 
 [tool.bumpversion]
-current_version = "0.3.0"
+current_version = "0.4.0"
 commit = false
 tag = false
 

@@ -15,17 +15,17 @@ def test__filter_out_last_day():
         latest_date: {
             "file_type": "P",
             "filename": "AMSR_U2_L3_SeaIce12km_P04_20231005.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
         second_date: {
             "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231004.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
         third_date: {
             "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231003.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
     }
 
@@ -43,17 +43,17 @@ def test__filter_out_last_day_unless_r04():
         latest_date: {
             "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231005.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
         second_date: {
             "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231004.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
         third_date: {
             "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231003.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
     }
 
@@ -71,17 +71,17 @@ def test__filter_out_last_day_with_gap_r04():
         latest_date: {
             "file_type": "P",
             "filename": "AMSR_U2_L3_SeaIce12km_P04_20231005.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
         second_date: {
             "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231003.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
         third_date: {
             "file_type": "R",
             "filename": "AMSR_U2_L3_SeaIce12km_R04_20231002.he5",
-            "data_url": "www.example.com",
+            "data_urls": ["www.example.com"],
         },
     }
 
@@ -115,7 +115,7 @@ def test__get_granule_info_by_date():
         dt.date(2023, 10, 3): {
             "file_type": "R",
             "filename": mock_data_granule._filename,
-            "data_url": f"www.example.com/foo/{mock_data_granule._filename}",
+            "data_urls": [f"www.example.com/foo/{mock_data_granule._filename}"],
         }
     }
 
