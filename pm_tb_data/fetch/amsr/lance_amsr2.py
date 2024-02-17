@@ -167,9 +167,6 @@ def download_data(*, data_url: str, output_path: Path, overwrite: bool) -> Path:
         headers={"User-Agent": "pm_tb_data"},
     ) as resp:
         resp.raise_for_status()
-        # TODO: it would be ideal to write this to a temp dir, then move it
-        # to `output_dir`. Otherwise a failure in downloading the data could
-        # result in partially-processed data.
         with TemporaryDirectory() as tmpdir:
             tmpdir_path = Path(tmpdir)
             tmp_fp = tmpdir_path / filename
