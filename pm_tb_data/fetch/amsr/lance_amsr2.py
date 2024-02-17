@@ -25,6 +25,8 @@ from pm_tb_data.fetch.errors import FetchRemoteDataError
 EXPECTED_LANCE_AMSR2_FILE_VERSION = "04"
 _URS_COOKIE = "urs_user_already_logged"
 _CHUNK_SIZE = 8 * 1024
+# timeout for the server to respond, in seconds.
+_TIMEOUT = 30
 
 
 def _get_earthdata_creds():
@@ -51,7 +53,7 @@ def _create_earthdata_authenticated_session(s=None, *, hosts: list[str], verify)
             # We don't want to accidentally fetch any data:
             stream=True,
             verify=verify,
-            timeout=5,
+            timeout=_TIMEOUT,
         )
         # Copy the headers so they can be used case-insensitively after the
         # response is closed.
@@ -162,7 +164,7 @@ def download_data(*, data_url: str, output_path: Path, overwrite: bool) -> Path:
 
     with session.get(
         data_url,
-        timeout=5,
+        timeout=_TIMEOUT,
         stream=True,
         headers={"User-Agent": "pm_tb_data"},
     ) as resp:
