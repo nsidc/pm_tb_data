@@ -6,6 +6,7 @@ NSIDC-0001 data are provided at two resolutions, depending on the channel:
 The 19.3 GHz, 22.2 GHz, and 37.0 GHz data are provided at a resolution of 25 km,
 and the 85.5 GHz and 91.7 GHz data are mapped to a 12.5 km grid.
 """
+
 import datetime as dt
 import re
 from pathlib import Path

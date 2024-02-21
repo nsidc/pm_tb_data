@@ -2,6 +2,7 @@
 
 * More information about AE_SI12: https://nsidc.org/data/ae_si12/versions/3
 """
+
 import datetime as dt
 from pathlib import Path
 

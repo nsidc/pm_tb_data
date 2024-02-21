@@ -1,4 +1,5 @@
 """Tests related to AMSR2 LANCE data."""
+
 import datetime as dt
 
 import pytest
