@@ -1,3 +1,8 @@
+## 0.5.0
+
+* Add support for fetching data from NSIDC0080 from disk.
+
+
 ## 0.4.0
 
 * Update `earthaccess` library version to `~=0.8.2`.
