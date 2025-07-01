@@ -1,13 +1,9 @@
-"""Functions for reading NSIDC-0007 v1 data from disk.
+"""Functions to read tbs from NSIDC-0802 binary files.
 
-NSIDC-0007 is "Nimbus-7 SMMR Polar Gridded Radiances and Sea Ice Concentrations,
-Version 1".
-
-More information about NSIDC-0007:
-https://nsidc.org/data/nsidc-0007/versions/1#anchor-2
+TODO: link to dataset landing page. Product is currently a prototype, but
+expected to be published soon.
 """
 
-import calendar
 import datetime as dt
 import re
 from pathlib import Path
@@ -18,26 +14,28 @@ from pm_tb_data._types import Hemisphere
 from pm_tb_data.fetch.nsidc_binary import read_binary_tb_file
 
 
-def get_nsidc_0007_tbs_from_disk(
-    *, date: dt.date, hemisphere: Hemisphere, data_dir: Path
+def get_nsidc_0802_tbs_from_disk(
+    *,
+    date: dt.date,
+    hemisphere: Hemisphere,
+    data_dir: Path,
 ) -> xr.Dataset:
-    """Return TB data from NSIDC-0007."""
+    """Return TB data from NSIDC-0802."""
     # This assumes `data_dir` points to the "nsidc0007_smmr_radiance_seaice_v01"
     # directory. E.g., /projects/DATASETS/nsidc0007_smmr_radiance_seaice_v01/.
-    expected_dir = (
-        data_dir / "TBS" / str(date.year) / calendar.month_abbr[date.month].upper()
-    )
 
     # Get all of the files containing TB data and match the expected format
     # (e.g., the file `800929S.37H` contains Sept. 29, 1980 SH Tbs for the
     # horizontal 37GHz channel.
-    fn_glob = f"{date:%y%m%d}{hemisphere[0].upper()}.*"
-    results = list(expected_dir.glob(fn_glob))
+    fn_glob = f"tb_as2_{date:%Y%m%d}_nrt_{hemisphere[0].lower()}*.bin"
+    results = list(data_dir.rglob(fn_glob))
     if not results:
         raise FileNotFoundError(f"No NSIDC-0007 TBs found for {date=} {hemisphere=}")
 
     tb_data_mapping = {}
-    tb_fn_re = re.compile(r".*\.(?P<channel>\d{2})(?P<polarization>H|V)")
+    tb_fn_re = re.compile(
+        r".*_" + hemisphere[0].lower() + r"(?P<channel>\d{2})(?P<polarization>h|v).bin"
+    )
     for tb_fp in results:
         match = tb_fn_re.match(tb_fp.name)
         assert match is not None
