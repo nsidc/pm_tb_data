@@ -1,7 +1,7 @@
 import datetime as dt
 from pathlib import Path
 
-from pm_tb_data.fetch.nsidc_0802 import get_nsidc_0802_tbs_from_disk
+from pm_tb_data.fetch.amsr.nsidc_0802 import get_nsidc_0802_tbs_from_disk
 
 
 def test_get_nsidc_0802_tbs_from_disk():
