@@ -21,20 +21,20 @@ def get_nsidc_0802_tbs_from_disk(
     data_dir: Path,
 ) -> xr.Dataset:
     """Return TB data from NSIDC-0802."""
-    # This assumes `data_dir` points to the "nsidc0007_smmr_radiance_seaice_v01"
-    # directory. E.g., /projects/DATASETS/nsidc0007_smmr_radiance_seaice_v01/.
+    # This assumes `data_dir` points to the "nsidc0802_polar_stereo_tbs"
+    # directory. E.g., /disks/sidads_ftp/DATASETS/nsidc0802_polar_stereo_tbs/.
 
-    # Get all of the files containing TB data and match the expected format
-    # (e.g., the file `800929S.37H` contains Sept. 29, 1980 SH Tbs for the
-    # horizontal 37GHz channel.
-    fn_glob = f"tb_as2_{date:%Y%m%d}_nrt_{hemisphere[0].lower()}*.bin"
+    # Example fn: NSIDC-0802_TB_AMSR2_N_37V_20250702_V1.0.bin
+    fn_glob = f"NSIDC-0802_TB_AMSR2_{hemisphere[0].upper()}_*_{date:%Y%m%d}_*.bin"
     results = list(data_dir.rglob(fn_glob))
     if not results:
         raise FileNotFoundError(f"No NSIDC-0007 TBs found for {date=} {hemisphere=}")
 
     tb_data_mapping = {}
     tb_fn_re = re.compile(
-        r".*_" + hemisphere[0].lower() + r"(?P<channel>\d{2})(?P<polarization>h|v).bin"
+        r"NSIDC-0802_TB_AMSR2_"
+        + hemisphere[0].upper()
+        + r"_(?P<channel>\d{2})(?P<polarization>H|V)_.*.bin"
     )
     for tb_fp in results:
         match = tb_fn_re.match(tb_fp.name)
