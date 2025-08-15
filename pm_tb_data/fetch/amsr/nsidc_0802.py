@@ -11,6 +11,9 @@ does not seem necessary for this dataset. The nc dataset is already nicely
 formatted and contains all the metadata it needs. Ideally, `pm_tb_data`
 structures poorly structured data into a better format, and this one doesn't
 really need it.
+
+The one exception is that the `time` dimension is dropped from the variables, as
+it is of length 1 and the `seaice_ecdr` expects no explicit time dim. Just x/y.
 """
 
 import datetime as dt
@@ -35,5 +38,9 @@ def get_nsidc_0802_tbs_from_disk(
 
     matching_filepath = results[0]
     ds = xr.open_dataset(matching_filepath)
+
+    # Squeeze the dataset, dropping the time dim (of length 1) from the
+    # variables, which is expected from code that imports this package.
+    ds = ds.squeeze()
 
     return ds
