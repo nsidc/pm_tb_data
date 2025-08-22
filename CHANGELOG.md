@@ -1,3 +1,7 @@
+## 0.6.0
+
+* Add support for fetching data from NSIDC0802 v2 from disk.
+
 ## 0.5.0
 
 * Add support for fetching data from NSIDC0080 from disk.
