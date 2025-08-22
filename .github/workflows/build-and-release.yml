@@ -30,7 +30,7 @@ jobs:
           cache-environment-key: 1
 
       - name: "Run conda build"
-        run: "conda build recipe/"
+        run: "BUILD_NUMBER=0 conda mambabuild --numpy 2.2 recipe/"
 
       - name: "run anaconda upload"
         env:
