@@ -1,6 +1,7 @@
 ## 0.6.0
 
 * Add support for fetching data from NSIDC0802 v2 from disk.
+* Update dependencies to support `earthaccess ~=0.14.0`.
 
 ## 0.5.0
 
