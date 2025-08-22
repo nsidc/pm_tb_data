@@ -1,7 +1,6 @@
 """Functions to read tbs from NSIDC-0802 binary files.
 
-TODO: link to dataset landing page. Product is currently a prototype, but
-expected to be published soon.
+See https://nsidc.org/data/nsidc-0802/versions/2 for more information.
 
 NOTE: most of the data products incldued in `pm_tb_data` "normalize" tb names to
 be something like `h19`. This is not currently done with nsidc0802, in part
