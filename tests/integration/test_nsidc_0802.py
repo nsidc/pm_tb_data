@@ -5,8 +5,7 @@ from pm_tb_data.fetch.amsr.nsidc_0802 import get_nsidc_0802_tbs_from_disk
 
 
 def test_get_nsidc_0802_tbs_from_disk():
-    # TODO: this data path is temporary!
-    data_dir = Path("/share/apps/nsidc0802/dev/scotts/output/")
+    data_dir = Path("/disks/sidads_ftp/DATASETS/nsidc0802_daily_a2_tb_v2/")
     data = get_nsidc_0802_tbs_from_disk(
         date=dt.date(2025, 1, 1),
         hemisphere="north",
