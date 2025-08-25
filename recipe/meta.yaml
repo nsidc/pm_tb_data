@@ -1,6 +1,6 @@
 package:
   name: pm_tb_data
-  version: "0.6.0"
+  version: "0.6.1"
 
 source:
   path: ../

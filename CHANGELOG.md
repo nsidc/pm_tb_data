@@ -1,3 +1,7 @@
+## 0.6.1
+
+* Add missing h5 libraries to conda recipe.
+
 ## 0.6.0
 
 * Add support for fetching data from NSIDC0802 v2 from disk.
