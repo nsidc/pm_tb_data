@@ -2,7 +2,7 @@ import datetime as dt
 from pathlib import Path
 
 from pm_tb_data._types import NORTH
-from pm_tb_data.fetch.nsidc_0001 import get_nsidc_0001_tbs_from_disk
+from pm_tb_data.fetch.nsidc_0001 import get_nsidc_0001_tbs, get_nsidc_0001_tbs_from_disk
 
 # Directory in which NSIDC-0001 V6 data is expected to be found.
 # NOTE/TODO: This path is specifc to NSIDC infrastructure. Make more generic?
@@ -16,6 +16,18 @@ def test_get_nsidc_0001_tbs_from_disk():
         date=date,
         hemisphere=NORTH,
         data_dir=DATA_DIR,
+        resolution="25",
+        sat="F17",
+    )
+
+    assert "h19" in tbs
+
+
+def test_get_nsidc_0001_tbs():
+    date = dt.date(2019, 1, 1)
+    tbs = get_nsidc_0001_tbs(
+        date=date,
+        hemisphere=NORTH,
         resolution="25",
         sat="F17",
     )

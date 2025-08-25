@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 from typing import Literal
 
+import earthaccess
 import xarray as xr
 
 from pm_tb_data._types import Hemisphere
@@ -89,6 +90,44 @@ def get_nsidc_0080_tbs_from_disk(
     # TODO: ideally, we would use datatree here. xarray >2024.9 should have
     # datatree integrated directly.
     ds = xr.open_dataset(filepath, group=platform_id)
+
+    ds = _normalize_nsidc_0080_tbs(
+        ds=ds,
+        hemisphere=hemisphere,
+        platform_id=platform_id,
+    )
+
+    return ds
+
+
+def get_nsidc_0080_tbs(
+    *,
+    hemisphere: Hemisphere,
+    date: dt.date,
+    resolution: NSIDC_0080_RESOLUTION,
+    platform_id: NSIDC_0080_PLATFORM_ID,
+    version: str = "2",
+) -> xr.Dataset:
+    """Return TB data from NSIDC-0080 using `earthaccess`"""
+    expected_fn = (
+        "NSIDC0080_TB_PS"
+        f"_{hemisphere[0].upper()}{resolution}km"
+        f"_{date:%Y%m%d}_v2.0.nc"
+    )
+
+    results = earthaccess.search_data(
+        short_name="NSIDC-0080",
+        version=version,
+        cloud_hosted=True,
+        granule_name=expected_fn,
+    )
+    assert len(results) == 1
+    granule_result = results[0]
+    _earthaccess_granule = earthaccess.open([granule_result])
+
+    # TODO: ideally, we would use datatree here. xarray >2024.9 should have
+    # datatree integrated directly.
+    ds = xr.open_dataset(_earthaccess_granule[0], group=platform_id)
 
     ds = _normalize_nsidc_0080_tbs(
         ds=ds,

@@ -66,8 +66,8 @@ def _get_a2l1c_625_data_fields_nc(
             tim=tim,
         )
         full_path = base_dir / Path(tbfn)
-        ds = Dataset(full_path, "r")
-        tb_data = np.array(ds.variables["TB"]).squeeze()
+        nc_ds = Dataset(full_path, "r")
+        tb_data = np.array(nc_ds.variables["TB"]).squeeze()
 
         # Need to convert 0 to nan
         tb_data[tb_data == 0] = np.nan

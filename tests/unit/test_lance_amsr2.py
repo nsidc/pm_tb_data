@@ -97,7 +97,7 @@ def test__get_granule_info_by_date():
         def __init__(self):
             self._filename = "AMSR_U2_L3_SeaIce12km_R04_20231003.he5"
 
-        def __dict__(self):
+        def __dict__(self):  # type: ignore[override]
             return {
                 "meta": {
                     "native-id": self._filename,
@@ -120,14 +120,14 @@ def test__get_granule_info_by_date():
         }
     }
 
-    actual = lance_amsr2._get_granule_info_by_date(data_granules=[mock_data_granule])
+    actual = lance_amsr2._get_granule_info_by_date(data_granules=[mock_data_granule])  # type: ignore[list-item]
 
     assert actual == expected
 
 
 def test__get_granule_info_by_date_raises_error():
     class MockDataGranule:
-        def __dict__(self):
+        def __dict__(self):  # type: ignore[override]
             return {
                 "meta": {
                     "native-id": "unexpected_filename.foo",
@@ -140,4 +140,4 @@ def test__get_granule_info_by_date_raises_error():
     mock_data_granule = MockDataGranule()
 
     with pytest.raises(FetchRemoteDataError):
-        lance_amsr2._get_granule_info_by_date(data_granules=[mock_data_granule])
+        lance_amsr2._get_granule_info_by_date(data_granules=[mock_data_granule])  # type: ignore[list-item]
