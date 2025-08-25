@@ -23,9 +23,9 @@ dependencies:
 
   # testing/linting/typechecking
   - pre-commit
-  - pytest
+  - pytest ~=8.4
   - pytest-cov
-  - mypy
+  - mypy ~=1.17.1
   - pyfakefs
 
   # Bulid utilities
