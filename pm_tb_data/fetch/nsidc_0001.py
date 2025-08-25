@@ -12,6 +12,7 @@ import re
 from pathlib import Path
 from typing import Literal
 
+import earthaccess
 import xarray as xr
 
 from pm_tb_data._types import Hemisphere
@@ -95,6 +96,43 @@ def get_nsidc_0001_tbs_from_disk(
             f"No sat data for expected sat in NSIDC-0001 file for {date:%Y-%m-%d}"
             f"  Error was: {err}"
         )
+    normalized_ds = _normalize_nsidc_0001_tbs(ds=ds, sat=sat)
+
+    return normalized_ds
+
+
+def get_nsidc_0001_tbs(
+    *,
+    date: dt.date,
+    hemisphere: Hemisphere,
+    resolution: NSIDC_0001_RESOLUTIONS,
+    sat: NSIDC_0001_SATS,
+    version: str = "6",
+):
+    """Return TB data from NSIDC-0001 using `earthaccess`.
+
+    Note that the TBs returned are resolution-dependent:
+
+    The 19.3 GHz, 22.2 GHz, and 37.0 GHz data are provided at a resolution of 25 km,
+    and the 85.5 GHz and 91.7 GHz data are mapped to a 12.5 km grid.
+    """
+
+    expected_fn = (
+        f"NSIDC0001_TB_PS_{hemisphere[0].upper()}{resolution}km_{date:%Y%m%d}_v6.0.nc"
+    )
+    results = earthaccess.search_data(
+        short_name="NSIDC-0001",
+        version=version,
+        cloud_hosted=True,
+        granule_name=expected_fn,
+    )
+    assert len(results) == 1
+
+    granule_result = results[0]
+
+    _earthaccess_granule = earthaccess.open([granule_result])
+    ds = xr.open_dataset(_earthaccess_granule[0], group=sat)
+
     normalized_ds = _normalize_nsidc_0001_tbs(ds=ds, sat=sat)
 
     return normalized_ds

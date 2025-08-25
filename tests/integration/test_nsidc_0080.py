@@ -1,10 +1,10 @@
 import datetime as dt
 
-from pm_tb_data.fetch.nsidc_0080 import get_nsidc_0080_tbs_from_disk
+from pm_tb_data.fetch.nsidc_0080 import get_nsidc_0080_tbs
 
 
-def test_get_nsidc_0080_tbs_from_disk():
-    tbs = get_nsidc_0080_tbs_from_disk(
+def test_get_nsidc_0080_tbs():
+    tbs = get_nsidc_0080_tbs(
         hemisphere="north",
         # Look 3 days in the past. There should be data for this date.
         # TODO: consider getting a listing (or searching CMR) to find out what

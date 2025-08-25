@@ -10,7 +10,7 @@ def read_binary_tb_file(
     *,
     filepath: Path,
     hemisphere: Hemisphere,
-) -> npt.NDArray[np.float64]:
+) -> npt.NDArray[np.floating]:
     """Read 25km NSIDC binary data from disk.
 
     Returns data in Kelvins. No/missing data areas are masked with `np.nan`.
