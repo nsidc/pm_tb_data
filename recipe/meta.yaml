@@ -23,6 +23,8 @@ requirements:
     - netCDF4 >=1.7.2
     - rasterio >=1.4.3
     - loguru >=0.7.3
+    - h5py >=3.14.0
+    - h5netcdf >=1.6.4
 
 about:
   home: https://github.com/nsidc/pm_tb_data
